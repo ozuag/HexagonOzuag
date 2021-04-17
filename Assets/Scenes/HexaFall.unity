@@ -1192,7 +1192,7 @@ MonoBehaviour:
   userLevelText: {fileID: 531850166}
   readLoadedData: 1
   nHorizontalHexagons: 8
-  nVerticalHexagons: 18
+  nVerticalHexagons: 19
   nDefinedColors: 5
   saveButton: {fileID: 1033897081}
   playAgainPanel: {fileID: 1675514584}
