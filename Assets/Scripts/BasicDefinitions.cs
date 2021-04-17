@@ -848,7 +848,7 @@ namespace HexaFall.Basics
         public static Action<string> GameOver;
 
         public const int HexaKillPoint = 5;
-        public const int LevelUpdatePoint = 100;
+        public const int LevelUpdatePoint = 1000;
 
         public static int IndexOfMinVal(float[] _values)
         {
