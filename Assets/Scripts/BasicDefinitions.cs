@@ -822,7 +822,11 @@ namespace HexaFall.Basics
         ~HexaGroup()
         {
             if(this.hexagons != null)
+            {
+                this.Ungroup();
                 this.hexagons.Clear();
+            }
+               
         }
 
 

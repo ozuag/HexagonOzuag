@@ -112,7 +112,11 @@ public class User : MonoBehaviour
     public bool AddPoint(int _point = 0, bool _isNewMove = false)
     {
         if(_isNewMove)
+        {
             this.moveCounter++;
+            HexaFunctions.HexagonMoved?.Invoke();
+        }
+        
 
         bool _isLevelUpdated = false;
 
@@ -134,7 +138,6 @@ public class User : MonoBehaviour
                 this.userLevel = _level;
             }
 
-            HexaFunctions.HexagonMoved?.Invoke();
 
         }
 

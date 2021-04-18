@@ -188,10 +188,6 @@ public class UserInputs : MonoBehaviour, IPointerDownHandler, IPointerUpHandler,
             int _points = this.tripleSet.CheckGroupState();
             if (_points > 0)
             {
-
-                // kullanıcı hamlesi ile oluştu -< true
-                bool _isNewLevel = User.Instance.AddPoint(_points, true);
-
                 // patlama olacak grubu dağıt
                 this.tripleSet.Ungroup();
 
@@ -200,11 +196,13 @@ public class UserInputs : MonoBehaviour, IPointerDownHandler, IPointerUpHandler,
 
                 HexaFunctions.DestroyWantedList?.Invoke();
 
-
                 yield return new WaitForSeconds(0.13f);
 
+                // kullanıcı hamlesi ile oluştu -< true
+                bool _isNewLevel = User.Instance.AddPoint(_points, true);
+
                 // hareketler sonrası yeni patlama olmayana kadar hareket edenleri check et
-                while(true)
+                while (true)
                 {
                     HexaGridSystem.Instance.FillEmptyGridsOnly(_isNewLevel, out HexaGroup _hexaGroup);
 
@@ -214,6 +212,8 @@ public class UserInputs : MonoBehaviour, IPointerDownHandler, IPointerUpHandler,
 
                     int __points = _hexaGroup.CheckGroupState();
 
+                    _hexaGroup.Ungroup(); // patlama olsun ya da olması geçici bir gruplamaydı
+
                     // yeni üçlemeler olmayana kadar bunu sürdür
                     if (__points <= 0)
                         break;
@@ -221,7 +221,6 @@ public class UserInputs : MonoBehaviour, IPointerDownHandler, IPointerUpHandler,
                     // boşluklar doldurulurken puan geldi, -< default val -> false
                     _isNewLevel = User.Instance.AddPoint(__points);
 
-                    _hexaGroup.Ungroup();
                     HexaFunctions.DestroyWantedList?.Invoke();
 
                     yield return new WaitForSeconds(0.13f);
