@@ -807,7 +807,12 @@ namespace HexaFall.Basics
         public void Ungroup()
         {
             if (this.hexagons != null)
+            {
+                this.SetGroupSorting(SortingLayers.Mid);
+
                 this.hexagons.Clear();
+
+            }
 
             this.pivotWPosition =  Vector2.zero;
 
