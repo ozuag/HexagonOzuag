@@ -108,9 +108,11 @@ public class User : MonoBehaviour
 
     }
 
-    public bool AddMove(int _point = 0)
+
+    public bool AddPoint(int _point = 0, bool _isNewMove = false)
     {
-        this.moveCounter++;
+        if(_isNewMove)
+            this.moveCounter++;
 
         bool _isLevelUpdated = false;
 
