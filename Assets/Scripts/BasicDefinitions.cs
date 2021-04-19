@@ -656,8 +656,7 @@ namespace HexaFall.Basics
 
         protected virtual void SetHexaParameter(int _parameter1)
         {
-            if (this.hexaType == HexaType.Bomb)
-                Debug.Log(" virtual -> SetHexaParameter()");
+            
         }
 
         public int GetParameter()
@@ -667,9 +666,6 @@ namespace HexaFall.Basics
 
         protected virtual int GetHexaParameter()
         {
-            if(this.hexaType == HexaType.Bomb)
-                Debug.Log(" virtual -> GetHexaParameter()");
-
             return -666;
         }
     }

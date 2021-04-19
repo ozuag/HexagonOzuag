@@ -90,7 +90,6 @@ public class HexaGridVertex : MonoBehaviour
     }
 
 
-
     public HexagonData GetHexaData()
     {
         HexagonData _data = new HexagonData();

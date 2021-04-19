@@ -36,13 +36,11 @@ public class BombHexagon : HexagonBasics
 
     protected override void SetHexaParameter(int _parameter1)
     {
-        Debug.Log(" BOMB override -> SetHexaParameter()");
         this.InitializeBomb(_parameter1);
     }
 
     protected override int  GetHexaParameter()
     {
-        Debug.Log("BOMB override -> GetHexaParameter()");
         return this.bombCounter;
     }
 
@@ -73,9 +71,6 @@ public class BombHexagon : HexagonBasics
 
     private void CountDown()
     {
-
-        Debug.Log(this.name +  " -> CountDown()");
-
         this.bombCounter--;
 
         if(this.bombCounter < 0)
