@@ -20,10 +20,6 @@ public class BombHexagon : HexagonBasics
 
         HexaFunctions.HexagonMoved += this.MoveListener;
 
-        if(this.countdownSprites != null)
-            this.bombCounter = this.countdownSprites.Length;
-
-        this.UpdateCounterSprite();
     }
 
     protected override void HexaDisabled()
@@ -35,6 +31,36 @@ public class BombHexagon : HexagonBasics
     protected override void HexaDestroyer()
     {
         HexaFunctions.HexagonMoved -= this.MoveListener;
+
+    }
+
+    protected override void SetHexaParameter(int _parameter1)
+    {
+        Debug.Log(" BOMB override -> SetHexaParameter()");
+        this.InitializeBomb(_parameter1);
+    }
+
+    protected override int  GetHexaParameter()
+    {
+        Debug.Log("BOMB override -> GetHexaParameter()");
+        return this.bombCounter;
+    }
+
+    private void InitializeBomb(int _counter = -1)
+    {
+
+        if (_counter < 0)
+        {
+            if (this.countdownSprites != null)
+                this.bombCounter = (this.countdownSprites.Length - 1);
+        }
+        else
+        {
+            this.bombCounter = _counter;
+        }
+
+
+        this.UpdateCounterSprite();
 
     }
 

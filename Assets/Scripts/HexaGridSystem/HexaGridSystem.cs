@@ -120,6 +120,8 @@ public class HexaGridSystem : MonoBehaviour
                         int _clrIndex = _isOdd ? _colorGroup1[Random.Range(0, _colorGroup1.Count)] : _colorGroup2[Random.Range(0, _colorGroup2.Count)];
                         _hex.SetColor(_clrIndex, this.definedColors[_clrIndex]);
 
+                        _hex.SetParameter();
+
                         // oyuna girerken collider'ların aktif olduğunda emin ol
                         _hex.SetEdgeCollidersEnableState(true);
                     }
@@ -161,13 +163,18 @@ public class HexaGridSystem : MonoBehaviour
 
                 if (_go != null)
                 {
-                    _go.SetActive(true);
+                   
 
                     IHexagon _hex = _go.GetComponent<IHexagon>();
                     if (_hex != null)
+                    {
                         _hex.SetColor(hexagons[_dataIndex].colorId, this.definedColors[hexagons[_dataIndex].colorId]);
 
-                    _hex.SetEdgeCollidersEnableState(true);
+                        _hex.SetParameter(hexagons[_dataIndex].parameter1);
+
+                        _hex.SetEdgeCollidersEnableState(true);
+                    }
+                    _go.SetActive(true);
 
                 }
 
@@ -254,16 +261,21 @@ public class HexaGridSystem : MonoBehaviour
 
                     _go = HexaPooling.Instance.PullObject(_htype);
 
-                    IHexagon _hex = _go.GetComponent<IHexagon>();
-                    if (_hex != null)
+                    if(_go != null)
                     {
-                        int _clrIndex = Random.Range(0, this.definedColors.Count);
-                        _hex.SetColor(_clrIndex, this.definedColors[_clrIndex]);
+                        IHexagon _hex = _go.GetComponent<IHexagon>();
+                        if (_hex != null)
+                        {
+                            int _clrIndex = Random.Range(0, this.definedColors.Count);
+                            _hex.SetColor(_clrIndex, this.definedColors[_clrIndex]);
+
+                            _hex.SetParameter();
+                        }
+
+                        _go.transform.position = this.vertices[i, j].transform.position + (new Vector3(0.0f, this.vertices[_nRows - 2, j].transform.position.y + 128f, 0.0f));
+
+                        _go.SetActive(true);
                     }
-
-                    _go.transform.position = this.vertices[i, j].transform.position + ( new Vector3(0.0f, this.vertices[_nRows - 2, j].transform.position.y + 128f, 0.0f) );
-
-                    _go.SetActive(true);
 
 
                 }
@@ -276,7 +288,8 @@ public class HexaGridSystem : MonoBehaviour
 
     }
 
-    // eğer en az bir hexagonun kendisi dahil en az 3 komşusu aynı renkte ise hamle yapılabilir
+    // Oyunda hamle kalıp kalmadığını anlamak için kullanılır, eğer bir hexagonun, kendisi hariç, etrafında en az 3 tane aynı renkte hexagon varsa
+    // (öyle ki) bu aynı renkte hexagonlar doğrusal / hepsi çift indisli kenarlarda / hepsi tek indisli kenarlarda olmayacak
     public bool IsGameOver()
     {
 
@@ -312,7 +325,7 @@ public class HexaGridSystem : MonoBehaviour
     private GameObject GetFromMap(int _rowIndex, int _colIndex)
     {
 
-        // olusturulan grid sistemde bir nesnenin üzerindeki grid _rowIndes + 2 'de duracaktır
+        // olusturulan grid sistemde bir nesnenin üzerindeki grid _rowIndex + 2 'de duracaktır
         int _nRows = this.vertices.GetLength(0);
 
         for (int _upIndex = _rowIndex + 2; _upIndex < _nRows; _upIndex += 2)
@@ -320,6 +333,7 @@ public class HexaGridSystem : MonoBehaviour
             // boşsa atla
             if (this.vertices[_upIndex, _colIndex].IsEmpty == true)
                 continue;
+
             // bunu boşalt
             GameObject _go = this.vertices[_upIndex, _colIndex].ReleaseGridObject();
 
@@ -351,7 +365,6 @@ public class HexaGridSystem : MonoBehaviour
                     continue;
                 }
 
-                // boş değilse bir şey yapma
                 if (this.vertices[i, j].IsEmpty == true)
                 {
                     _hexagons.Add(new HexagonData());

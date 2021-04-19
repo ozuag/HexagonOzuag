@@ -100,7 +100,7 @@ public class HexaPooling : MonoBehaviour
         if (_obj == null)
             return false;
 
-        _obj.name += _obj.GetInstanceID().ToString();
+        _obj.name += _unit.ToString() + "_ID(" + _obj.GetInstanceID().ToString()+ ")";
 
         _obj.SetActive(false);
 

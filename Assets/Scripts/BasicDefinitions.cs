@@ -40,6 +40,10 @@ namespace HexaFall.Basics
 
     public interface IHexagon
     {
+        void SetParameter(int _parameter1 = -666);
+
+        int GetParameter();
+
         Transform GetTransform();
 
         void OnSelected(Vector2 _localSelecPosition);
@@ -73,11 +77,13 @@ namespace HexaFall.Basics
     {
         public int type;
         public int colorId;
+        public int parameter1; // rn: bomba sayaç
 
-        public HexagonData(int _color = int.MinValue, int _type = int.MinValue)
+        public HexagonData(int _color = int.MinValue, int _type = int.MinValue, int _parameter1 = int.MinValue)
         {
-            type = _type;
-            colorId = _color;
+            this.type = _type;
+            this.colorId = _color;
+            this.parameter1 = _parameter1;
         }
     }
 
@@ -118,7 +124,6 @@ namespace HexaFall.Basics
             HexaFunctions.KillAllHexagons += this.Kill;
 
             this.HexaEnabled();
-
         }
 
         protected virtual void HexaEnabled()
@@ -644,6 +649,29 @@ namespace HexaFall.Basics
             return this.hexaType;
         }
 
+        public void SetParameter(int _par1 = -666)
+        {
+            this.SetHexaParameter(_par1);
+        }
+
+        protected virtual void SetHexaParameter(int _parameter1)
+        {
+            if (this.hexaType == HexaType.Bomb)
+                Debug.Log(" virtual -> SetHexaParameter()");
+        }
+
+        public int GetParameter()
+        {
+            return this.GetHexaParameter();
+        }
+
+        protected virtual int GetHexaParameter()
+        {
+            if(this.hexaType == HexaType.Bomb)
+                Debug.Log(" virtual -> GetHexaParameter()");
+
+            return -666;
+        }
     }
 
     public class HexaGroup

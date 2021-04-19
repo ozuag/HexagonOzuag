@@ -93,7 +93,7 @@ public class HexaGridVertex : MonoBehaviour
 
     public HexagonData GetHexaData()
     {
-        HexagonData _data = new HexagonData(-1, -1);
+        HexagonData _data = new HexagonData();
 
         IHexagon _ihexa = this.GetComponentInChildren<IHexagon>();
 
@@ -101,6 +101,7 @@ public class HexaGridVertex : MonoBehaviour
         {
             _data.colorId = _ihexa.GetColorId();
             _data.type = (int) _ihexa.GetHexaType();
+            _data.parameter1 = _ihexa.GetParameter();
 
         }
 
