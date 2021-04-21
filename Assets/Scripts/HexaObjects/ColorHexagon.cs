@@ -6,7 +6,6 @@ public class ColorHexagon : BasicHexagon, IColorHexagon
 {
     protected int colorId = int.MinValue; // renk id, renk karşılaştırmalarda kullanılır
 
-
     public void SetColor(int _colorId)
     {
         this.colorId = _colorId;
@@ -20,34 +19,40 @@ public class ColorHexagon : BasicHexagon, IColorHexagon
         return this.colorId;
     }
 
-    public override LinkedObject GetSameColorEdgeNeighbor(int _edgeId)
-    {
+    //public override LinkedObject GetSameColorEdgeNeighbor(int _edgeId, bool _ccwSearch = true, bool _mustBeSaeColor = true)
+    //{
 
-        // önce saat yönü tersindeki kenara bak, aynı renkte ise bunu gönder
-        int _adjacentEdgeId = _edgeId + 1;
-        _adjacentEdgeId %= this.edgeColliders.Count;
+    //   _preferredStep = _ccwSearch ? 1 : -1;
 
-        int? _colorId = this.edgeColliders[_adjacentEdgeId]?.LinkedHexagon?.hexagon?.GetHexagonData()?.colorId;
+    //    // önce saat yönü tersindeki kenara bak, aynı renkte ise bunu gönder
+    //    int _adjacentEdgeId = _edgeId + _preferredStep;
+    //    _adjacentEdgeId %= this.edgeColliders.Count;
 
-        if (_colorId == this.colorId)
-            return this.edgeColliders[_adjacentEdgeId]?.LinkedHexagon;
+    //    int? _colorId = this.edgeColliders[_adjacentEdgeId]?.LinkedHexagon?.hexagon?.GetHexagonData()?.colorId;
 
-        // buraya gelirsen saat yönündekine bak
-        // saat yönğndeki komşu kenara bak, üçleme oluyorsa işaretle
-        _adjacentEdgeId = _edgeId - 1;
+    //    if ((_colorId == this.colorId) | !_mustBeSameColor)
+    //        return this.edgeColliders[_adjacentEdgeId]?.LinkedHexagon;
 
-        if (_adjacentEdgeId < 0)
-            _adjacentEdgeId += this.edgeColliders.Count;
+    //    // buraya gelirsen saat yönündekine bak
+    //    // saat yönğndeki komşu kenara bak, üçleme oluyorsa işaretle
+    //    _adjacentEdgeId = _edgeId - _preferredStep;
 
-        _colorId = this.edgeColliders[_adjacentEdgeId]?.LinkedHexagon?.hexagon?.GetHexagonData()?.colorId;
+    //    if (_adjacentEdgeId < 0)
+    //        _adjacentEdgeId += this.edgeColliders.Count;
 
-        if (_colorId == this.colorId)
-            return this.edgeColliders[_adjacentEdgeId]?.LinkedHexagon;
+    //    _colorId = this.edgeColliders[_adjacentEdgeId]?.LinkedHexagon?.hexagon?.GetHexagonData()?.colorId;
+
+    //    if ((_colorId == this.colorId) | !_mustBeSameColor)
+    //        return this.edgeColliders[_adjacentEdgeId]?.LinkedHexagon;
 
 
-        return null;
+    //    return null;
 
-    }
+    //}
+
+
+
+
 
     // bu hexagnonun mevcut konumumda üçlü olma durumu ve eğer üçlü ise patlatıldığında kaç puan gelir
     public int TripletState()
@@ -74,7 +79,7 @@ public class ColorHexagon : BasicHexagon, IColorHexagon
             if (_firstColorId  == this.colorId)
             {
 
-                LinkedObject _secondLinkedObject = _firstLinkedObject.hexagon.GetSameColorEdgeNeighbor((int)_firstLinkedObject.edge);
+                LinkedObject _secondLinkedObject = _firstLinkedObject.hexagon.GetEdgeNeighbor((int) _firstLinkedObject.edge, true, true);
 
                 if (_secondLinkedObject != null)
                 {
@@ -91,7 +96,7 @@ public class ColorHexagon : BasicHexagon, IColorHexagon
 
                     if (_firstLinkedObject.hexagon.AddOnWantedList()) // KOMŞUSUNU EKLE
                     {
-                        HexaType _linkedType = _firstLinkedObject.hexagon.GetHexaType();
+                        HexaType _linkedType = _firstLinkedObject.hexagon.GetHexaType;
 
                         if (_pointCounter.ContainsKey(_linkedType) == false)
                             _pointCounter.Add(_linkedType, 1);
@@ -101,7 +106,7 @@ public class ColorHexagon : BasicHexagon, IColorHexagon
 
                     if (_secondLinkedObject.hexagon.AddOnWantedList()) // KOMŞUSUNUN KOMŞUSUNU EKLE
                     {
-                        HexaType _linkedType = _secondLinkedObject.hexagon.GetHexaType();
+                        HexaType _linkedType = _secondLinkedObject.hexagon.GetHexaType;
 
                         if (_pointCounter.ContainsKey(_linkedType) == false)
                             _pointCounter.Add(_linkedType, 1);

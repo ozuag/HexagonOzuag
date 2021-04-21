@@ -53,16 +53,14 @@ namespace HexaFall.Basics
 
         int GetColorId();
 
-        // kendis ile aynı renkte 3'lü grup olabildi mi
+        // kendisi ile aynı renkte 3'lü grup oluşturabildi mi
         int TripletState();
 
     }
 
-
+    // rengi 
     public interface IHexagon
     {
-
-        Transform GetTransform();
 
         void OnSelected(Vector2 _localSelecPosition);
 
@@ -70,49 +68,13 @@ namespace HexaFall.Basics
 
         void SetEdgeCollidersEnableState(bool _state);
 
-        HexaEdgeCollider GetEdgeCollider(int _edgeId);
-
-        HexaType GetHexaType();
-
         int GetClosestActiveEdge(int _edgeId);
 
         void MoveTo(Vector3 _target, float _moveSpeed);
 
-
         // kendi rengi önemsiz olduğu için en alt katmandaki interface'de, tüm hexagonlarda bu sorug yapıabilir
         bool IsTripletCandidate(); // bir hamle ile bu grid'de üçlü grup oluşabilir mi? (kendisi üçlü içinde olmak zorunda değil)
 
-    }
-
-
-    // oyun verileri kaydedilirken kullanılır
-    [Serializable]
-    public class HexagonData
-    {
-        public int type;
-        public int colorId;
-        public int parameter1; // rn: bomba sayaç
-
-        public HexagonData(int _type = int.MinValue, int _color = int.MinValue, int _parameter1 = int.MinValue)
-        {
-            this.type = _type;
-            this.colorId = _color;
-            this.parameter1 = _parameter1;
-        }
-    }
-
-    [Serializable]
-    public class GameData
-    {
-        public int score;
-        public int moveCount;
-
-        public int nVerticalHexagons;
-        public int nHorizontalHexagons;
-
-        public int nDefinedColors;
-
-        public List<HexagonData> hexagons;
     }
 
     public abstract class BasicHexagon : MonoBehaviour, IHexagon
@@ -131,60 +93,34 @@ namespace HexaFall.Basics
 
         private Coroutine moveCoroutine = null; // konum değiştirirken bu coroutine çalışır
 
-        public abstract LinkedObject GetSameColorEdgeNeighbor(int _colorId);
+        public Transform GetTransform => this.transform;
 
+        public HexaType GetHexaType => this.hexaType;
 
-        public virtual HexagonData GetHexagonData()
-        {
-            return new HexagonData((int)this.hexaType);
-        }
+        public virtual HexagonData GetHexagonData() => new HexagonData((int)this.hexaType);
 
-        public virtual void SetHexagonData(HexagonData _data)
-        {
+        public virtual void SetHexagonData(HexagonData _data) { }
 
-        }
-
-        private void OnEnable()
+        protected virtual void OnEnable()
         {
             // bombalar bunu tetikleyebilir
             HexaFunctions.KillAllHexagons += this.Kill;
-
-            this.HexaEnabled();
         }
 
-        protected virtual void HexaEnabled()
-        {
-
-        }
-
-        private void OnDisable()
+        protected virtual void OnDisable()
         {
             HexaFunctions.KillAllHexagons -= this.Kill;
             HexaFunctions.DestroyWantedList -= this.Kill;
 
-            this.HexaDisabled();
-
             this.Reset();
         }
 
-        protected virtual void HexaDisabled()
-        {
-
-        }
-
-        private void OnDestroy()
+        protected virtual void OnDestroy()
         {
             HexaFunctions.KillAllHexagons -= this.Kill;
             HexaFunctions.DestroyWantedList -= this.Kill;
 
-            this.HexaDestroyer();
-
             this.Reset();
-        }
-
-        protected virtual void HexaDestroyer()
-        {
-
         }
 
         public bool AddOnWantedList()
@@ -197,12 +133,9 @@ namespace HexaFall.Basics
 
             this.isOnWantedList = true;
             return true;
-        }
+        }    
 
-
-        
-
-        // verilen kenlara en yakın aktif diğer kenear hangisi
+        // verilen kenlra en yakın aktif diğer kenear hangisi
         public int GetClosestActiveEdge(int _edgeId)
         {
             // en fazla 3 adımda yakından uzağa komşualara bakabiliriz
@@ -234,7 +167,6 @@ namespace HexaFall.Basics
             // bulamadın :(
             return (int)HexagonEdge.NotDefined;
         }
-
 
         // Oyunda hamle kalıp kalmadığını anlamak için kullanılır, eğer bir hexagonun kendisi hariç etrafında en az 3 tane aynı renkte hexagon varsa
         // (öyle ki) bu aynı renkte hexagonlar doğrusal / hepsi çift indisli kenarlarda / hepsi tek indisli kenarlarda olmayacak
@@ -309,21 +241,11 @@ namespace HexaFall.Basics
         // Hexagonu havuza gönder
         public void Kill()
         {
-            HexaGridVertex _hgv = this.GetComponentInParent<HexaGridVertex>();
-
-            if (_hgv != null)
-                _hgv.ReleaseGridObject();
+            this.GetComponentInParent<HexaGridVertex>()?.ReleaseGridObject();
 
             this.Reset();
 
             HexaPooling.Instance.PushObject(this.hexaType, this.gameObject);
-
-            this.KillingMeSoftly();
-        }
-
-        // havuza giderken ekstra bir şeyler yapmak istersen override et
-        protected virtual void KillingMeSoftly()
-        {
 
         }
 
@@ -382,7 +304,6 @@ namespace HexaFall.Basics
 
         }
 
-
         public void SetEdgeCollidersEnableState(bool _state)
         {
             if (this.edgeColliders == null)
@@ -390,6 +311,42 @@ namespace HexaFall.Basics
 
             for (int i = 0; i < this.edgeColliders.Count; i++)
                 this.edgeColliders[i].SetColliderEnabledState(_state);
+
+        }
+
+        public LinkedObject GetEdgeNeighbor(int _edgeId, bool _ccwSearch = true, bool _mustBeSameColor = true)
+        {
+
+            int _preferredStep = _ccwSearch ? 1 : -1;
+
+            // önce saat yönü tersindeki kenara bak, aynı renkte ise bunu gönder
+            int _adjacentEdgeId = _edgeId + _preferredStep;
+            if(_adjacentEdgeId < 0)
+                _adjacentEdgeId += this.edgeColliders.Count;
+            else if(_adjacentEdgeId >= this.edgeColliders.Count)
+                _adjacentEdgeId -= this.edgeColliders.Count;
+
+            int? _colorId = this.edgeColliders[_adjacentEdgeId]?.LinkedHexagon?.hexagon?.GetHexagonData()?.colorId;
+
+            if ((_colorId == this.GetHexagonData()?.colorId) | !_mustBeSameColor)
+                return this.edgeColliders[_adjacentEdgeId]?.LinkedHexagon;
+
+            // buraya gelirsen saat yönündekine bak
+            // saat yönğndeki komşu kenara bak, üçleme oluyorsa işaretle
+            _adjacentEdgeId = _edgeId - _preferredStep;
+
+            if (_adjacentEdgeId < 0)
+                _adjacentEdgeId += this.edgeColliders.Count;
+            else if (_adjacentEdgeId >= this.edgeColliders.Count)
+                _adjacentEdgeId -= this.edgeColliders.Count;
+
+            _colorId = this.edgeColliders[_adjacentEdgeId]?.LinkedHexagon?.hexagon?.GetHexagonData()?.colorId;
+
+            if ((_colorId == this.GetHexagonData()?.colorId) | !_mustBeSameColor)
+                return this.edgeColliders[_adjacentEdgeId]?.LinkedHexagon;
+
+
+            return null;
 
         }
 
@@ -413,41 +370,15 @@ namespace HexaFall.Basics
                 return false;
             }
 
-            _groupList.Add(_firstLinkedObject.hexagon.GetTransform());
+            _groupList.Add(_firstLinkedObject.hexagon.GetTransform);
 
-            // bu hexagon için _ccw yönündeki kenara bak bağlantılı bir hexagon varsa onu al yoksa _cw 'dekine bak, yine yoksa false
-            int _nextEdge = ((int)_firstLinkedObject.edge) + (_ccwSearch ? 1 : -1);
 
-            if (_nextEdge < 0) _nextEdge += 6;
-            else if (_nextEdge > 5) _nextEdge -= 6;
+            _secondLinkedObject = _firstLinkedObject.hexagon.GetEdgeNeighbor((int) _firstLinkedObject.edge, _ccwSearch, false);
 
-            HexaEdgeCollider _hec = _firstLinkedObject.hexagon.GetEdgeCollider(_nextEdge);
-            if (_hec != null)
+            if (_secondLinkedObject.hexagon != null)
             {
-                _secondLinkedObject = _hec.LinkedHexagon;
-
-                if (_secondLinkedObject.hexagon != null)
-                {
-                    _groupList.Add(_secondLinkedObject.hexagon.GetTransform());
-                    return true;
-                }
-            }
-
-            _nextEdge = ((int)_firstLinkedObject.edge) + (_ccwSearch ? -1 : 1);
-
-            if (_nextEdge < 0) _nextEdge += 6;
-            else if (_nextEdge > 5) _nextEdge -= 6;
-
-            _hec = _firstLinkedObject.hexagon.GetEdgeCollider(_nextEdge);
-            if (_hec != null)
-            {
-                _secondLinkedObject = _hec.LinkedHexagon;
-
-                if (_secondLinkedObject.hexagon != null)
-                {
-                    _groupList.Add(_secondLinkedObject.hexagon.GetTransform());
-                    return true;
-                }
+                _groupList.Add(_secondLinkedObject.hexagon.GetTransform);
+                return true;
             }
 
             _groupList.Clear();
@@ -473,33 +404,7 @@ namespace HexaFall.Basics
             this.moveCoroutine = null;
             yield return null;
         }
-
-
-        public HexaEdgeCollider GetEdgeCollider(int _edgeId)
-        {
-            if (this.edgeColliders == null)
-                return null;
-
-            if ((_edgeId < 0) | (_edgeId >= this.edgeColliders.Count))
-                return null;
-
-            return this.edgeColliders[_edgeId];
-
-        }
-
-        public Transform GetTransform()
-        {
-            return this.transform;
-        }
-
-        public HexaType GetHexaType()
-        {
-            return this.hexaType;
-        }
-
        
-
-      
     }
 
     public class HexaGroup
@@ -513,11 +418,7 @@ namespace HexaFall.Basics
             this.pivotWPosition = Vector3.zero;
         }
 
-        public void AddHexagon(Transform _transform)
-        {
-            if (this.hexagons != null)
-                this.hexagons.Add(_transform);
-        }
+        public void AddHexagon(Transform _transform) => this.hexagons?.Add(_transform);
 
         public void SetGroup(List<Transform> _hexagons)
         {
@@ -530,7 +431,6 @@ namespace HexaFall.Basics
                 this.SetGroupSorting(SortingLayers.Mid);
                 this.hexagons.Clear();
             }
-
 
             this.pivotWPosition = Vector2.zero;
 
@@ -608,16 +508,7 @@ namespace HexaFall.Basics
         public void SetGroupEdgeColliders(bool _enabled)
         {
             for (int i = 0; i < this.hexagons.Count; i++)
-            {
-
-                IHexagon _hex = this.hexagons[i].GetComponent<IHexagon>();
-
-                if (_hex == null)
-                    continue;
-
-                _hex.SetEdgeCollidersEnableState(_enabled);
-
-            }
+                this.hexagons[i].GetComponent<BasicHexagon>()?.SetEdgeCollidersEnableState(_enabled); ;
         }
 
         public int CheckGroupState()
@@ -642,7 +533,6 @@ namespace HexaFall.Basics
             return _totalPoint;
         }
 
-
         private void SetGroupSorting(SortingLayers _sortingLayer)
         {
             if (this.hexagons == null)
@@ -658,7 +548,6 @@ namespace HexaFall.Basics
             }
 
         }
-
 
         public void Ungroup()
         {
@@ -739,5 +628,34 @@ namespace HexaFall.Basics
     }
 
 
-   
+    // oyun verileri kaydedilirken kullanılır
+    [Serializable]
+    public class HexagonData
+    {
+        public int type;
+        public int colorId;
+        public int parameter1; // rn: bomba sayaç
+
+        public HexagonData(int _type = int.MinValue, int _color = int.MinValue, int _parameter1 = int.MinValue)
+        {
+            this.type = _type;
+            this.colorId = _color;
+            this.parameter1 = _parameter1;
+        }
+    }
+
+    [Serializable]
+    public class GameData
+    {
+        public int score;
+        public int moveCount;
+
+        public int nVerticalHexagons;
+        public int nHorizontalHexagons;
+
+        public int nDefinedColors;
+
+        public List<HexagonData> hexagons;
+    }
+
 }

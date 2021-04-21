@@ -12,24 +12,23 @@ public class BombHexagon : ColorHexagon, IBombHexagon
 
     private int bombCounter = 13;
 
-
-
-    protected override void HexaEnabled()
+    protected override void OnEnable()
     {
-        Debug.Log("SAHNEDE BOMBA VAR");
-
+        base.OnEnable();
         HexaFunctions.HexagonMoved += this.MoveListener;
 
     }
 
-    protected override void HexaDisabled()
+    protected override void OnDisable()
     {
+        base.OnEnable();
         HexaFunctions.HexagonMoved -= this.MoveListener;
 
     }
 
-    protected override void HexaDestroyer()
+    protected override void OnDestroy()
     {
+        base.OnDestroy();
         HexaFunctions.HexagonMoved -= this.MoveListener;
 
     }
@@ -64,8 +63,6 @@ public class BombHexagon : ColorHexagon, IBombHexagon
 
     }
 
-
-
     public void SetParameter(int _par1 = -666)
     {
         this.InitializeBomb(_par1);
@@ -81,7 +78,6 @@ public class BombHexagon : ColorHexagon, IBombHexagon
 
         this.CountDown();
     }
-
 
     private void CountDown()
     {
