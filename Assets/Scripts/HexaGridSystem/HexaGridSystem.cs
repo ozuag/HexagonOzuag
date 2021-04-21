@@ -141,6 +141,12 @@ public class HexaGridSystem : MonoBehaviour
     // Sahne yerleşimi dosyadan okunduğunda çağrılacak
     public void FillGridSystem(List<HexagonData> _hexagons)
     {
+        if(_hexagons == null)
+        {
+            this.FillGridSystem();
+            return;
+        }
+
         int _nRows = this.vertices.GetLength(0);
         int _nColumns = this.vertices.GetLength(1);
 

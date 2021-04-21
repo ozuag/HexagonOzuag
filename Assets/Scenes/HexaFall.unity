@@ -1190,7 +1190,7 @@ MonoBehaviour:
   userScoreText: {fileID: 755982426}
   bestScoreText: {fileID: 1026991372}
   userLevelText: {fileID: 531850166}
-  readLoadedData: 1
+  readSavedData: 1
   nHorizontalHexagons: 8
   nVerticalHexagons: 19
   nDefinedColors: 5

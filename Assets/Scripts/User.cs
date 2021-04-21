@@ -24,7 +24,7 @@ public class User : MonoBehaviour
     private Text userLevelText;
 
     [SerializeField]
-    private bool readLoadedData = true;  // oyuncu kaldığı yerden devam etsin
+    private bool readSavedData = true;  // oyuncu kaldığı yerden devam etsin
 
     [SerializeField, Range(3, 15)]
     private int nHorizontalHexagons = 8;
@@ -78,24 +78,27 @@ public class User : MonoBehaviour
     {
         bool _isDataLoaded = false;
 
-        GameData _data = new GameData();
+        GameData _data = null;
 
-        if (this.readLoadedData)
+        if (this.readSavedData)
             _isDataLoaded = this.LoadGame(out _data);
 
         yield return new WaitForEndOfFrame();
 
         if (_isDataLoaded)
-            HexaMap.Instance.InitialzieMap(_data.nVerticalHexagons, _data.nHorizontalHexagons, _data.nDefinedColors);
-        else
-            HexaMap.Instance.InitialzieMap(this.nVerticalHexagons, this.nHorizontalHexagons, this.nDefinedColors);
+        {
+            this.nVerticalHexagons = _data.nVerticalHexagons;
+            this.nHorizontalHexagons = _data.nHorizontalHexagons;
+            this.nDefinedColors = _data.nDefinedColors;
+
+        }
+           
+        HexaMap.Instance.InitialzieMap(this.nVerticalHexagons, this.nHorizontalHexagons, this.nDefinedColors);
 
         yield return new WaitForEndOfFrame();
 
-        if ((_isDataLoaded) & (_data != null))
-            HexaGridSystem.Instance.FillGridSystem(_data.hexagons);
-        else
-            HexaGridSystem.Instance.FillGridSystem();
+        HexaGridSystem.Instance.FillGridSystem(_data?.hexagons);
+
 
         // varsa verileri oku
         if (PlayerPrefs.HasKey(this.bestScorePrefKey))
@@ -216,7 +219,7 @@ public class User : MonoBehaviour
 
         if (!File.Exists(_path))
         {
-            UnityEngine.Debug.Log(_path + " : Dosya bulunamadı");
+            Debug.Log(_path + " : Dosya bulunamadı");
             return false;
         }
 
