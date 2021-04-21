@@ -46,6 +46,9 @@ namespace HexaFall.Basics
 
         Transform GetTransform();
 
+        // bu hexagona belirtilen kenarın komşusuna bağlı olan hexagonun bilgisini verir
+        LinkedObject GetSameColorEdgeNeighbor(int _edgeId);
+
         void OnSelected(Vector2 _localSelecPosition);
 
         bool AddOnWantedList();
@@ -101,7 +104,7 @@ namespace HexaFall.Basics
         public List<HexagonData> hexagons;
     }
 
-    public class HexagonBasics : MonoBehaviour, IHexagon
+    public abstract class HexagonBasics : MonoBehaviour, IHexagon
     {
         public SpriteRenderer spriteRenderer; // renk ataması yapılacak sprite
 
@@ -173,7 +176,6 @@ namespace HexaFall.Basics
             return true;
         }
 
-
         // verilen kenlara en yakın aktif diğer kenear hangisi
         public int GetClosestActiveEdge(int _edgeId)
         {
@@ -207,8 +209,6 @@ namespace HexaFall.Basics
             return (int) HexagonEdge.NotDefined;
         }
 
-
-
         // bu hexagnonun mevcut konumumda üçlü olma durumu ve eğer üçlü ise patlatıldığında kaç puan gelir
         public int TripletState()
         {
@@ -221,132 +221,60 @@ namespace HexaFall.Basics
             // bütün edge colliderlara git bağlı olduklarının rengine bak
             for (int i = 0; i < this.edgeColliders.Count; i++)
             {
-
+                // kenar aktif değilse atla
                 if (this.edgeColliders[i].ActiveEdge == false)
                     continue;
 
-                // i. kenarından bağlı olan diper altıgen
-                LinkedObject _edgeLinked = this.edgeColliders[i].LinkedHexagon;
+                // i. kenarından bağlı olan altıgen
+                LinkedObject _firstLinkedObject = this.edgeColliders[i].LinkedHexagon;
 
                 // bağlı olduğu altıgen ile renk uyumu yoksa dikkate alma
-                if (_edgeLinked.hexagon.GetColorId() == this.colorId)
+                if (_firstLinkedObject.hexagon.GetColorId() == this.colorId)
                 {
-                 
-                    // saat yönü tersindeki kenara bak, üçleme oluyorsa işaretle
-                    int _ccwEdge = (int)_edgeLinked.edge + 1;
-                    _ccwEdge %= 6;
 
-                    // komşusu ayno renkte, peki komşunun üçlü oluşturabilecek komşuları aynı renkte mi
+                    LinkedObject _secondLinkedObject = _firstLinkedObject.hexagon.GetSameColorEdgeNeighbor((int) _firstLinkedObject.edge);
 
-                    HexaEdgeCollider _hec = _edgeLinked.hexagon.GetEdgeCollider(_ccwEdge); // komşunun, ccw'deki komşusu
-
-                    if(_hec != null)
+                    if(_secondLinkedObject != null)
                     {
-                        if (_hec.ActiveEdge)
+                        // üçlü oluşturuldu, yok edilecekler listesine eklemeye başla
+
+                        if (this.AddOnWantedList()) // KENDİSİNİ EKLE
                         {
-                            LinkedObject _ccwLinked = _hec.LinkedHexagon;
-
-                            if (_ccwLinked.hexagon.GetColorId() == this.colorId) // komşunun ccw'dekş komşusu aynı renk mi
-                            {
- 
-                                // listeye eklenebiliyorsa ödlünü al, daha önce listeye girdiyse ödülünü almak için geç kaldın
-
-                                // üçlü oluşturuldu, yok edilecekler listesine ekle
-                                if( this.AddOnWantedList() ) // KENDİSİNİ EKLE
-                                {
-                                    // listeye eklenebildi, ödülü al
-                                    
-                                    if (_pointCounter.ContainsKey(this.hexaType) == false)
-                                        _pointCounter.Add(this.hexaType, 1);
-                                    else
-                                        _pointCounter[this.hexaType]++;
-                                }
-
-                                if(_edgeLinked.hexagon.AddOnWantedList()) // KOMŞUSUNU EKLE
-                                {
-                                    HexaType _linkedType = _edgeLinked.hexagon.GetHexaType();
-                                    if (_pointCounter.ContainsKey(_linkedType) == false)
-                                        _pointCounter.Add(_linkedType, 1);
-                                    else
-                                        _pointCounter[_linkedType]++;
-                                }
-
-                                if(_ccwLinked.hexagon.AddOnWantedList()) // KOMŞUSUNUN KOMŞUSUNU EKLE
-                                {
-                                    HexaType _linkedType = _ccwLinked.hexagon.GetHexaType();
-
-                                    if (_pointCounter.ContainsKey(_linkedType) == false)
-                                        _pointCounter.Add(_linkedType, 1);
-                                    else
-                                        _pointCounter[_linkedType]++;
-                                }
-
-                                _isTriplet = true;
-
-                            }
-
+                            // listeye eklenebildi, ödülü al
+                            if (_pointCounter.ContainsKey(this.hexaType) == false)
+                                _pointCounter.Add(this.hexaType, 1);
+                            else
+                                _pointCounter[this.hexaType]++;
                         }
+
+                        if (_firstLinkedObject.hexagon.AddOnWantedList()) // KOMŞUSUNU EKLE
+                        {
+                            HexaType _linkedType = _firstLinkedObject.hexagon.GetHexaType();
+
+                            if (_pointCounter.ContainsKey(_linkedType) == false)
+                                _pointCounter.Add(_linkedType, 1);
+                            else
+                                _pointCounter[_linkedType]++;
+                        }
+
+                        if (_secondLinkedObject.hexagon.AddOnWantedList()) // KOMŞUSUNUN KOMŞUSUNU EKLE
+                        {
+                            HexaType _linkedType = _secondLinkedObject.hexagon.GetHexaType();
+
+                            if (_pointCounter.ContainsKey(_linkedType) == false)
+                                _pointCounter.Add(_linkedType, 1);
+                            else
+                                _pointCounter[_linkedType]++;
+                        }
+
+                        _isTriplet = true;
                     }
 
-                   
-                    // YUKARIDA YAPILANLARI CW YONDE TEKRARLA -> DONGU YAPILABILIR
-                    // saat yönğndeki komşu kenara bak, üçleme oluyorsa işaretle
-                    int _cwEdge = (int)_edgeLinked.edge - 1;
-                    if (_cwEdge < 0)
-                        _cwEdge += 6;
-
-                    _hec = _edgeLinked.hexagon.GetEdgeCollider(_cwEdge);
-
-                    if(_hec != null)
-                    {
-                        if (_hec.ActiveEdge)
-                        {
-                            LinkedObject _cwLinked = _hec.LinkedHexagon;
-
-                            if (_cwLinked.hexagon.GetColorId() == this.colorId)
-                            {
-                                // listeye eklenebiliyorsa ödlünü al
-                                if (this.AddOnWantedList())
-                                {
-
-                                    if (_pointCounter.ContainsKey(this.hexaType) == false)
-                                        _pointCounter.Add(this.hexaType, 1);
-                                    else
-                                        _pointCounter[this.hexaType]++;
-                                }
-
-
-                                if (_edgeLinked.hexagon.AddOnWantedList())
-                                {
-                                    HexaType _linkedType = _edgeLinked.hexagon.GetHexaType();
-                                    if (_pointCounter.ContainsKey(_linkedType) == false)
-                                        _pointCounter.Add(_linkedType, 1);
-                                    else
-                                        _pointCounter[_linkedType]++;
-                                }
-
-                                if (_cwLinked.hexagon.AddOnWantedList())
-                                {
-                                    HexaType _linkedType = _cwLinked.hexagon.GetHexaType();
-
-                                    if (_pointCounter.ContainsKey(_linkedType) == false)
-                                        _pointCounter.Add(_linkedType, 1);
-                                    else
-                                        _pointCounter[_linkedType]++;
-                                }
-
-                                _isTriplet = true;
-                            }
-
-                        }
-                    }
-
-                   
                 }
             }
 
 
-            //  En az üçlütane hexa aynı renkte grup olduysa, hepsinin puanını birlikte burada hesapla
+            //  En az üç tane hexa aynı renkte grup olduysa, hepsinin puanını birlikte burada hesapla
             if(_isTriplet)
             {
                 // puanı hesapla
@@ -601,7 +529,6 @@ namespace HexaFall.Basics
             return false; // grup bulamadı
         }
 
-
         private IEnumerator Move(Vector3 _targetPosition, float _moveSpeed = 1.33f)
         {
 
@@ -667,6 +594,35 @@ namespace HexaFall.Basics
         protected virtual int GetHexaParameter()
         {
             return -666;
+        }
+
+        public LinkedObject GetSameColorEdgeNeighbor(int _edgeId)
+        {
+
+            // önce saat yönü tersindeki kenara bak, aynı renkte ise bunu gönder
+            int _adjacentEdgeId = _edgeId + 1;
+            _adjacentEdgeId %= this.edgeColliders.Count;
+
+            int? _colorId = this.edgeColliders[_adjacentEdgeId]?.LinkedHexagon?.hexagon?.GetColorId();
+
+            if (_colorId == this.colorId)
+                return this.edgeColliders[_adjacentEdgeId]?.LinkedHexagon;
+
+            // buraya gelirsen saat yönündekine bak
+            // saat yönğndeki komşu kenara bak, üçleme oluyorsa işaretle
+            _adjacentEdgeId = _edgeId - 1;
+
+            if (_adjacentEdgeId < 0)
+                _adjacentEdgeId += this.edgeColliders.Count;
+
+            _colorId = this.edgeColliders[_adjacentEdgeId]?.LinkedHexagon?.hexagon?.GetColorId();
+
+            if (_colorId == this.colorId)
+                return this.edgeColliders[_adjacentEdgeId]?.LinkedHexagon;
+
+
+            return null;
+
         }
     }
 
