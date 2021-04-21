@@ -53,14 +53,8 @@ namespace HexaFall.Basics
 
         int GetColorId();
 
-        // bu hexagona belirtilen kenarın komşusuna bağlı olan ve knedisi ile aynı renkte olan hexagonun bilgisini verir
-        LinkedObject GetSameColorEdgeNeighbor(int _edgeId);
-
-
         // kendis ile aynı renkte 3'lü grup olabildi mi
         int TripletState();
-
-        
 
     }
 
@@ -137,6 +131,9 @@ namespace HexaFall.Basics
 
         private Coroutine moveCoroutine = null; // konum değiştirirken bu coroutine çalışır
 
+        public abstract LinkedObject GetSameColorEdgeNeighbor(int _colorId);
+
+
         public virtual HexagonData GetHexagonData()
         {
             return new HexagonData((int)this.hexaType);
@@ -202,6 +199,9 @@ namespace HexaFall.Basics
             return true;
         }
 
+
+        
+
         // verilen kenlara en yakın aktif diğer kenear hangisi
         public int GetClosestActiveEdge(int _edgeId)
         {
@@ -261,9 +261,7 @@ namespace HexaFall.Basics
                 if (this.edgeColliders[i].ActiveEdge == false)
                     continue;
 
-                int _colorKey = int.MinValue;
-                if (this.edgeColliders[i].LinkedHexagon.hexagon != null)
-                    _colorKey = this.edgeColliders[i].LinkedHexagon.hexagon.GetColorId();
+                int _colorKey = (int) this.edgeColliders[i].LinkedHexagon.hexagon?.GetHexagonData()?.colorId;
 
                 if (_colorKey < 0)
                     continue;
@@ -694,7 +692,7 @@ namespace HexaFall.Basics
     {
         public HexagonEdge edge;
         public int uniqeId;
-        public ColorHexagon hexagon;
+        public BasicHexagon hexagon;
 
         public LinkedObject()
         {

@@ -20,14 +20,14 @@ public class ColorHexagon : BasicHexagon, IColorHexagon
         return this.colorId;
     }
 
-    public LinkedObject GetSameColorEdgeNeighbor(int _edgeId)
+    public override LinkedObject GetSameColorEdgeNeighbor(int _edgeId)
     {
 
         // önce saat yönü tersindeki kenara bak, aynı renkte ise bunu gönder
         int _adjacentEdgeId = _edgeId + 1;
         _adjacentEdgeId %= this.edgeColliders.Count;
 
-        int? _colorId = this.edgeColliders[_adjacentEdgeId]?.LinkedHexagon?.hexagon?.GetColorId();
+        int? _colorId = this.edgeColliders[_adjacentEdgeId]?.LinkedHexagon?.hexagon?.GetHexagonData()?.colorId;
 
         if (_colorId == this.colorId)
             return this.edgeColliders[_adjacentEdgeId]?.LinkedHexagon;
@@ -39,7 +39,7 @@ public class ColorHexagon : BasicHexagon, IColorHexagon
         if (_adjacentEdgeId < 0)
             _adjacentEdgeId += this.edgeColliders.Count;
 
-        _colorId = this.edgeColliders[_adjacentEdgeId]?.LinkedHexagon?.hexagon?.GetColorId();
+        _colorId = this.edgeColliders[_adjacentEdgeId]?.LinkedHexagon?.hexagon?.GetHexagonData()?.colorId;
 
         if (_colorId == this.colorId)
             return this.edgeColliders[_adjacentEdgeId]?.LinkedHexagon;
@@ -69,7 +69,9 @@ public class ColorHexagon : BasicHexagon, IColorHexagon
             LinkedObject _firstLinkedObject = this.edgeColliders[i].LinkedHexagon;
 
             // bağlı olduğu altıgen ile renk uyumu yoksa dikkate alma
-            if (_firstLinkedObject.hexagon.GetColorId() == this.colorId)
+            int _firstColorId = (int)_firstLinkedObject.hexagon?.GetHexagonData()?.colorId;
+
+            if (_firstColorId  == this.colorId)
             {
 
                 LinkedObject _secondLinkedObject = _firstLinkedObject.hexagon.GetSameColorEdgeNeighbor((int)_firstLinkedObject.edge);
