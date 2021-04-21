@@ -19,41 +19,6 @@ public class ColorHexagon : BasicHexagon, IColorHexagon
         return this.colorId;
     }
 
-    //public override LinkedObject GetSameColorEdgeNeighbor(int _edgeId, bool _ccwSearch = true, bool _mustBeSaeColor = true)
-    //{
-
-    //   _preferredStep = _ccwSearch ? 1 : -1;
-
-    //    // önce saat yönü tersindeki kenara bak, aynı renkte ise bunu gönder
-    //    int _adjacentEdgeId = _edgeId + _preferredStep;
-    //    _adjacentEdgeId %= this.edgeColliders.Count;
-
-    //    int? _colorId = this.edgeColliders[_adjacentEdgeId]?.LinkedHexagon?.hexagon?.GetHexagonData()?.colorId;
-
-    //    if ((_colorId == this.colorId) | !_mustBeSameColor)
-    //        return this.edgeColliders[_adjacentEdgeId]?.LinkedHexagon;
-
-    //    // buraya gelirsen saat yönündekine bak
-    //    // saat yönğndeki komşu kenara bak, üçleme oluyorsa işaretle
-    //    _adjacentEdgeId = _edgeId - _preferredStep;
-
-    //    if (_adjacentEdgeId < 0)
-    //        _adjacentEdgeId += this.edgeColliders.Count;
-
-    //    _colorId = this.edgeColliders[_adjacentEdgeId]?.LinkedHexagon?.hexagon?.GetHexagonData()?.colorId;
-
-    //    if ((_colorId == this.colorId) | !_mustBeSameColor)
-    //        return this.edgeColliders[_adjacentEdgeId]?.LinkedHexagon;
-
-
-    //    return null;
-
-    //}
-
-
-
-
-
     // bu hexagnonun mevcut konumumda üçlü olma durumu ve eğer üçlü ise patlatıldığında kaç puan gelir
     public int TripletState()
     {

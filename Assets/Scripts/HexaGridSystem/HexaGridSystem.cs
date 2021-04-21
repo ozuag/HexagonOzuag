@@ -137,7 +137,6 @@ public class HexaGridSystem : MonoBehaviour
 
     }
 
-
     // Sahne yerleşimi dosyadan okunduğunda çağrılacak
     public void FillGridSystem(List<HexagonData> _hexagons)
     {

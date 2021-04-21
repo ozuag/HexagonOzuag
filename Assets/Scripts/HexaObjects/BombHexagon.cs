@@ -33,7 +33,6 @@ public class BombHexagon : ColorHexagon, IBombHexagon
 
     }
 
-
     public override HexagonData GetHexagonData()
     {
         return new HexagonData((int)this.hexaType, this.colorId, this.bombCounter);

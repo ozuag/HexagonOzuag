@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-
-
 namespace HexaFall.Basics
 {
     public enum SortingLayers
@@ -626,7 +624,6 @@ namespace HexaFall.Basics
         }
 
     }
-
 
     // oyun verileri kaydedilirken kullanılır
     [Serializable]
