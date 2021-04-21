@@ -44,7 +44,7 @@ public class HexaPooling : MonoBehaviour
             if (Random.Range(0f, 1f) < 0.13f)
                 _unit = HexaType.StarredHexagon;
             else
-                _unit = HexaType.Hexagon;
+                _unit = HexaType.ColorHexagon;
         }
 
         // eğer istenen nensenin master'ı yoksa önce master'ı oluştur

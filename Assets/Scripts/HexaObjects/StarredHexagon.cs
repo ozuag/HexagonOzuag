@@ -1,6 +1,6 @@
 ﻿using HexaFall.Basics;
 
-public class StarredHexagon : HexagonBasics
+public class StarredHexagon : ColorHexagon
 {
     
 }

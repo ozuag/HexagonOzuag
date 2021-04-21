@@ -94,7 +94,7 @@ public class UserInputs : MonoBehaviour, IPointerDownHandler, IPointerUpHandler,
         if (_hit.transform != null)
         {
 
-            IHexagon _hexa = _hit.transform.GetComponent<IHexagon>();
+            ColorHexagon _hexa = _hit.transform.GetComponent<ColorHexagon>();
 
             if (_hexa != null)
             {

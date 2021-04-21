@@ -55,12 +55,10 @@ public class User : MonoBehaviour
 
     public static User Instance { get; private set; }
 
-    #region Singleton
     private void Awake()
     {
         Instance = this;
     }
-    #endregion
 
     // Start is called before the first frame update
     void Start()
@@ -281,7 +279,6 @@ public class User : MonoBehaviour
         UserInputs.Instance.StopCurrentGame();
 
         HexaFunctions.KillAllHexagons?.Invoke();
-
 
         this.moveCounter = 0;
         this.userScore = 0;

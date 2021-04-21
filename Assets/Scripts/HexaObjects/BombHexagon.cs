@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using HexaFall.Basics;
 
-public class BombHexagon : HexagonBasics
+public class BombHexagon : ColorHexagon, IBombHexagon
 {
 
     [SerializeField]
@@ -34,14 +34,16 @@ public class BombHexagon : HexagonBasics
 
     }
 
-    protected override void SetHexaParameter(int _parameter1)
+
+    public override HexagonData GetHexagonData()
     {
-        this.InitializeBomb(_parameter1);
+        return new HexagonData((int)this.hexaType, this.colorId, this.bombCounter);
     }
 
-    protected override int  GetHexaParameter()
+    public override void SetHexagonData(HexagonData _data)
     {
-        return this.bombCounter;
+        this.SetColor(_data.colorId);
+        this.SetParameter(_data.parameter1);
     }
 
     private void InitializeBomb(int _counter = -1)
@@ -60,6 +62,18 @@ public class BombHexagon : HexagonBasics
 
         this.UpdateCounterSprite();
 
+    }
+
+
+
+    public void SetParameter(int _par1 = -666)
+    {
+        this.InitializeBomb(_par1);
+    }
+
+    public int GetParameter()
+    {
+        return this.bombCounter;
     }
 
     private void MoveListener()

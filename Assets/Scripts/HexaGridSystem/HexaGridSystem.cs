@@ -114,13 +114,14 @@ public class HexaGridSystem : MonoBehaviour
                 {
                     _go.SetActive(true);
 
-                    IHexagon _hex = _go.GetComponent<IHexagon>();
+                    BasicHexagon _hex = _go.GetComponent<BasicHexagon>();
+
                     if (_hex != null)
                     {
                         int _clrIndex = _isOdd ? _colorGroup1[Random.Range(0, _colorGroup1.Count)] : _colorGroup2[Random.Range(0, _colorGroup2.Count)];
-                        _hex.SetColor(_clrIndex, this.definedColors[_clrIndex]);
 
-                        _hex.SetParameter();
+                        // bu hexagona sadece rasgele renk ata 
+                        _hex.SetHexagonData(new HexagonData(int.MinValue, _clrIndex, int.MinValue));
 
                         // oyuna girerken collider'ların aktif olduğunda emin ol
                         _hex.SetEdgeCollidersEnableState(true);
@@ -138,7 +139,7 @@ public class HexaGridSystem : MonoBehaviour
 
 
     // Sahne yerleşimi dosyadan okunduğunda çağrılacak
-    public void FillGridSystem(List<HexagonData> hexagons)
+    public void FillGridSystem(List<HexagonData> _hexagons)
     {
         int _nRows = this.vertices.GetLength(0);
         int _nColumns = this.vertices.GetLength(1);
@@ -159,18 +160,17 @@ public class HexaGridSystem : MonoBehaviour
                     continue;
 
                 // tanımlı türde bir hexa getir ve tanımlı rengi 
-                GameObject _go = HexaPooling.Instance.PullObject( (HexaType) hexagons[_dataIndex].type);
+                GameObject _go = HexaPooling.Instance.PullObject( (HexaType) _hexagons[_dataIndex].type);
 
                 if (_go != null)
                 {
                    
 
-                    IHexagon _hex = _go.GetComponent<IHexagon>();
+                    BasicHexagon _hex = _go.GetComponent<BasicHexagon>();
                     if (_hex != null)
                     {
-                        _hex.SetColor(hexagons[_dataIndex].colorId, this.definedColors[hexagons[_dataIndex].colorId]);
-
-                        _hex.SetParameter(hexagons[_dataIndex].parameter1);
+                        
+                        _hex.SetHexagonData(_hexagons[_dataIndex]);
 
                         _hex.SetEdgeCollidersEnableState(true);
                     }
@@ -190,6 +190,17 @@ public class HexaGridSystem : MonoBehaviour
     // BUNLARI BURADAN KALDIR BİR ARA
     [SerializeField]
     private List<Color> definedColors;
+
+    public Color GetColor(int _index)
+    {
+        if (this.definedColors == null)
+            return Color.gray;
+
+        if ((_index) < 0 | (_index >= this.definedColors.Count))
+            _index = Random.Range(0, this.definedColors.Count);
+
+        return this.definedColors[_index];
+    }
 
     private void SetDefinedColors(int _nColors = 5)
     {
@@ -255,7 +266,7 @@ public class HexaGridSystem : MonoBehaviour
                     HexaType _htype = HexaType.NotDefined;
                     if(_useBomb == true)
                     {
-                        _htype = HexaType.Bomb;
+                        _htype = HexaType.BombHexagon;
                         _useBomb = false;
                     }
 
@@ -263,15 +274,9 @@ public class HexaGridSystem : MonoBehaviour
 
                     if(_go != null)
                     {
-                        IHexagon _hex = _go.GetComponent<IHexagon>();
-                        if (_hex != null)
-                        {
-                            int _clrIndex = Random.Range(0, this.definedColors.Count);
-                            _hex.SetColor(_clrIndex, this.definedColors[_clrIndex]);
-
-                            _hex.SetParameter();
-                        }
-
+           
+                        _go.GetComponent<BasicHexagon>()?.SetHexagonData(new HexagonData(int.MinValue, Random.Range(0, this.definedColors.Count), int.MinValue));
+                        
                         _go.transform.position = this.vertices[i, j].transform.position + (new Vector3(0.0f, this.vertices[_nRows - 2, j].transform.position.y + 128f, 0.0f));
 
                         _go.SetActive(true);
@@ -308,7 +313,7 @@ public class HexaGridSystem : MonoBehaviour
                 if (this.vertices[i, j].IsEmpty == true)
                     continue;
 
-                IHexagon _hex = this.vertices[i, j].transform.GetComponentInChildren<IHexagon>();
+                ColorHexagon _hex = this.vertices[i, j].transform.GetComponentInChildren<ColorHexagon>();
                 if (_hex != null)
                 {
                     if (_hex.IsTripletCandidate())

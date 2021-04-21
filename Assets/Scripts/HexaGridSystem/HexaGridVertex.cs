@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using HexaFall.Basics;
 
 
@@ -59,7 +57,7 @@ public class HexaGridVertex : MonoBehaviour
         }
         else
         {
-            HexaFall.Basics.IHexagon _hex = _object.GetComponent<HexaFall.Basics.IHexagon>();
+            ColorHexagon _hex = _object.GetComponent<ColorHexagon>();
             if (_hex != null)
                 _hex.MoveTo(this.transform.position, 6.66f);
         }
@@ -90,21 +88,6 @@ public class HexaGridVertex : MonoBehaviour
     }
 
 
-    public HexagonData GetHexaData()
-    {
-        HexagonData _data = new HexagonData();
-
-        IHexagon _ihexa = this.GetComponentInChildren<IHexagon>();
-
-        if(_ihexa != null)
-        {
-            _data.colorId = _ihexa.GetColorId();
-            _data.type = (int) _ihexa.GetHexaType();
-            _data.parameter1 = _ihexa.GetParameter();
-
-        }
-
-        return _data;
-    }
-
+    public HexagonData GetHexaData() => this.GetComponentInChildren<BasicHexagon>()?.GetHexagonData();
+    
 }

@@ -78,7 +78,7 @@ public class HexaEdgeCollider : MonoBehaviour
             this.linkedHexagon.edge = (HexagonEdge)collision.transform.GetSiblingIndex();
 
         this.linkedHexagon.uniqeId = collision.gameObject.GetInstanceID();
-        this.linkedHexagon.hexagon = collision.gameObject.GetComponentInParent<IHexagon>();
+        this.linkedHexagon.hexagon = collision.gameObject.GetComponentInParent<ColorHexagon>();
     }
 
     public LinkedObject LinkedHexagon
