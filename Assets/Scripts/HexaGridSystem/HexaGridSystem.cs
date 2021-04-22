@@ -201,6 +201,8 @@ public class HexaGridSystem : MonoBehaviour
         if (this.definedColors == null)
             return Color.gray;
 
+        Debug.Log("Color Index: " + _index.ToString());
+
         if ((_index) < 0 | (_index >= this.definedColors.Count))
             _index = Random.Range(0, this.definedColors.Count);
 

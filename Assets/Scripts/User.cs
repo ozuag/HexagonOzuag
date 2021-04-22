@@ -53,6 +53,8 @@ public class User : MonoBehaviour
 
     private readonly string bestScorePrefKey = "BestScore";
 
+    private Coroutine resetGameCoroutine = null;
+
     public static User Instance { get; private set; }
 
     private void Awake()
@@ -279,9 +281,15 @@ public class User : MonoBehaviour
 
     public void ResetGame()
     {
-        UserInputs.Instance.StopCurrentGame();
+        if (this.resetGameCoroutine != null)
+            return;
 
-        HexaFunctions.KillAllHexagons?.Invoke();
+        this.resetGameCoroutine = StartCoroutine(this.ResetGameCoroutine());
+    }
+
+    private IEnumerator ResetGameCoroutine()
+    {
+        UserInputs.Instance.StopCurrentGame();
 
         this.moveCounter = 0;
         this.userScore = 0;
@@ -290,9 +298,15 @@ public class User : MonoBehaviour
 
         this.UpdateBoard();
 
+
+        HexaFunctions.KillAllHexagons?.Invoke();
+
+        yield return new WaitForSeconds(1.33f);
+
         HexaGridSystem.Instance.FillGridSystem();
 
 
+        this.resetGameCoroutine = null;
     }
 
 

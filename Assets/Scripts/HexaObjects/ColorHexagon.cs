@@ -130,5 +130,18 @@ public class ColorHexagon : BasicHexagon, IColorHexagon
         this.SetColor(_data.colorId);
     }
 
+    protected override void BreakHexagon()
+    {
+        GameObject _particles = HexaPooling.Instance.PullObject(HexaType.HexaParticles);
+        if (_particles != null)
+        {
+            //_particles.transform.SetParent(this.transform.parent);
+            _particles.transform.position = this.transform.position;
+
+            _particles.GetComponent<HexaParticles>()?.SetColor(HexaGridSystem.Instance.GetColor(this.colorId));
+
+            _particles.SetActive(true);
+        }
+    }
 
 }

@@ -21,6 +21,8 @@ namespace HexaFall.Basics
         ColorHexagon = 0,
         StarredHexagon,
         BombHexagon,
+
+        HexaParticles = 666
     }
 
     public enum HexagonEdge
@@ -133,7 +135,7 @@ namespace HexaFall.Basics
             return true;
         }    
 
-        // verilen kenlra en yakın aktif diğer kenear hangisi
+        // a en yakın aktif diğer kenear hangisi
         public int GetClosestActiveEdge(int _edgeId)
         {
             // en fazla 3 adımda yakından uzağa komşualara bakabiliriz
@@ -239,11 +241,20 @@ namespace HexaFall.Basics
         // Hexagonu havuza gönder
         public void Kill()
         {
+            this.BreakHexagon();
+
             this.GetComponentInParent<HexaGridVertex>()?.ReleaseGridObject();
 
             this.Reset();
 
+         
+
             HexaPooling.Instance.PushObject(this.hexaType, this.gameObject);
+
+        }
+
+        protected virtual void BreakHexagon()
+        {
 
         }
 
@@ -402,7 +413,7 @@ namespace HexaFall.Basics
             this.moveCoroutine = null;
             yield return null;
         }
-       
+
     }
 
     public class HexaGroup
@@ -572,7 +583,6 @@ namespace HexaFall.Basics
 
         }
 
-
     }
 
     public class LinkedObject
@@ -616,7 +626,6 @@ namespace HexaFall.Basics
                     _tempVal = _values[i];
                     _index = i;
                 }
-
 
             }
 

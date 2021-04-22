@@ -76,7 +76,7 @@ public class HexaPooling : MonoBehaviour
         if (this.hexfallUnits.ContainsKey(_unit) == false)
             this.hexfallUnits.Add(_unit, new Queue<GameObject>());
 
-        // eğer havuzun boyutu çok fazla ilse artık havuza alma, bu nesneyi sil
+        // eğer havuzun boyutu çok fazla ise artık havuza alma, bu nesneyi sil
         if(this.hexfallUnits[_unit].Count < this.poolMaxCapacity)
         {
             _object.transform.SetParent(this.transform);
