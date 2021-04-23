@@ -21,7 +21,7 @@ public class BombHexagon : ColorHexagon, IBombHexagon
 
     protected override void OnDisable()
     {
-        base.OnEnable();
+        base.OnDisable();
         HexaFunctions.HexagonMoved -= this.MoveListener;
 
     }
