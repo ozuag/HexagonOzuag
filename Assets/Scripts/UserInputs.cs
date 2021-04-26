@@ -97,13 +97,7 @@ public class UserInputs : MonoBehaviour, IPointerDownHandler, IPointerUpHandler,
             ColorHexagon _hexa = _hit.transform.GetComponent<ColorHexagon>();
 
             if (_hexa != null)
-            {
-                Debug.Log(_hit.transform.name + " OnPointerUp ");
-
                 _hexa.OnSelected(_hit.transform.InverseTransformPoint(_hit.point));
-
-            }
-
 
         }
 
@@ -155,7 +149,7 @@ public class UserInputs : MonoBehaviour, IPointerDownHandler, IPointerUpHandler,
         for (int _ite = 0; _ite < 3; _ite++)
         {
            
-            // harekete başlamadan önce karışıklık olmasın diye collider'laro pasif yap
+            // harekete başlamadan önce karışıklık olmasın diye collider'ları pasif yap
             this.tripleSet.SetGroupEdgeColliders(false);
 
             yield return new WaitForEndOfFrame();
@@ -164,7 +158,7 @@ public class UserInputs : MonoBehaviour, IPointerDownHandler, IPointerUpHandler,
             for(_rotation = 0.0f; _rotation <= 120f; _rotation += _deltaAngle)
             {
                 this.tripleSet.RotateTripleSet(_direciton *_deltaAngle);
-                yield return new WaitForSecondsRealtime(0.00333f);
+                yield return new WaitForFixedUpdate();
             }
 
             // eksik açı kaldıysa tamamla

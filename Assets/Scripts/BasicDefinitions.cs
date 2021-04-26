@@ -58,10 +58,8 @@ namespace HexaFall.Basics
 
     }
 
-    // rengi 
     public interface IHexagon
     {
-
         void OnSelected(Vector2 _localSelecPosition);
 
         bool AddOnWantedList();

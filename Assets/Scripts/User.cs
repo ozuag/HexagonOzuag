@@ -1,5 +1,4 @@
 ﻿
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -44,12 +43,10 @@ public class User : MonoBehaviour
     [SerializeField]
     private Text playAgainMessageText;
 
-
     private int moveCounter = 0;
     private int userScore = 0;
     private int userBestScore = 0;
     private int userLevel = 0;
-
 
     private readonly string bestScorePrefKey = "BestScore";
 
