@@ -13,7 +13,7 @@ public class ColorHexagon : BasicHexagon, IColorHexagon
         this.colorId = _colorId;
 
         if (this.spriteRenderer != null)
-            this.spriteRenderer.color = HexaGridSystem.Instance.GetColor(_colorId);
+            this.spriteRenderer.color = HexaFunctions.GetHexaColor(_colorId);
     }
 
     public int GetColorId()
@@ -139,7 +139,7 @@ public class ColorHexagon : BasicHexagon, IColorHexagon
             //_particles.transform.SetParent(this.transform.parent);
             _particles.transform.position = this.transform.position;
 
-            _particles.GetComponent<HexaParticles>()?.SetColor(HexaGridSystem.Instance.GetColor(this.colorId));
+            _particles.GetComponent<HexaParticles>()?.SetColor(HexaFunctions.GetHexaColor(this.colorId));
 
             _particles.SetActive(true);
         }

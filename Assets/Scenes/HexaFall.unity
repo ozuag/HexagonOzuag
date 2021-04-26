@@ -722,7 +722,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   vertexMaster: {fileID: 8738340322694857122, guid: 0d6688a1b3c05443daf3c7540ea6bdf6,
     type: 3}
-  definedColors: []
 --- !u!114 &507063450
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1192,7 +1191,7 @@ MonoBehaviour:
   userLevelText: {fileID: 531850166}
   readSavedData: 1
   nHorizontalHexagons: 8
-  nVerticalHexagons: 19
+  nVerticalHexagons: 18
   nDefinedColors: 5
   saveButton: {fileID: 1033897081}
   playAgainPanel: {fileID: 1675514584}

@@ -7,12 +7,6 @@ public class HexaMap : MonoBehaviour
 {
     public GameObject vertexmaster;
 
-    private int nHorizontalHexagons = 8;
-
-    private int nVerticalHexagons = 9;
-
-    private int nDefinedColors = 5;
-
     [SerializeField]
     private RectTransform hexaGridSystem;
 
@@ -30,13 +24,9 @@ public class HexaMap : MonoBehaviour
     #endregion
 
 
-    public void InitialzieMap(int _nVertical, int _nHorizontal, int _nColors)
+    public void InitialzieMap(int _nVertical, int _nHorizontal)
     {
         this.hexaMapRect = this.GetComponent<RectTransform>();
-
-        this.nVerticalHexagons = _nVertical;
-        this.nHorizontalHexagons = _nHorizontal;
-        this.nDefinedColors = _nColors;
 
         // sahnenin ekran boyutuna gore olceklenmesini bekle
 
@@ -54,8 +44,8 @@ public class HexaMap : MonoBehaviour
         }
 
         // istenen sayı kadar hexagon yerleştirirsen ihityaç duyacağın alan
-        float _requiredRectWidth = ((3f*this.nHorizontalHexagons + 1f)/4f) * _hexagonObjectWidth;
-        float _requiredRectHeight = ( (this.nVerticalHexagons + 1f) / 2f ) * _hexagonObjectHeight;
+        float _requiredRectWidth = ((3f*_nHorizontal + 1f)/4f) * _hexagonObjectWidth;
+        float _requiredRectHeight = ( (_nVertical + 1f) / 2f ) * _hexagonObjectHeight;
 
 
         float _tempMapScaleX = _mapRectWidth / _requiredRectWidth;
@@ -66,7 +56,8 @@ public class HexaMap : MonoBehaviour
         if ( (_mapScale * _hexagonObjectWidth) > this.maxHexagonCellWidth)
             _mapScale = this.maxHexagonCellWidth / _hexagonObjectWidth;
 
-        HexaGridSystem.Instance.SetGridSystem(this.nVerticalHexagons, this.nHorizontalHexagons, _hexagonObjectWidth, _hexagonObjectHeight, _requiredRectWidth, _requiredRectHeight, _mapScale, this.nDefinedColors);
+       
+        HexaGridSystem.Instance.SetGridSystem(_nVertical, _nHorizontal, _hexagonObjectWidth, _hexagonObjectHeight, _requiredRectWidth, _requiredRectHeight, _mapScale);
 
     }
 

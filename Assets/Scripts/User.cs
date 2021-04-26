@@ -94,23 +94,21 @@ public class User : MonoBehaviour
             this.nDefinedColors = _data.nDefinedColors;
 
         }
-           
-        HexaMap.Instance.InitialzieMap(this.nVerticalHexagons, this.nHorizontalHexagons, this.nDefinedColors);
+
+        HexaFunctions.SetHexaColor(this.nDefinedColors);
+
+        HexaMap.Instance.InitialzieMap(this.nVerticalHexagons, this.nHorizontalHexagons);
 
         yield return new WaitForEndOfFrame();
 
         HexaGridSystem.Instance.FillGridSystem(_data?.hexagons);
 
-
         // varsa verileri oku
         if (PlayerPrefs.HasKey(this.bestScorePrefKey))
             this.userBestScore = PlayerPrefs.GetInt(this.bestScorePrefKey);
 
-
         this.UpdateBoard();
-
     }
-
 
     public bool AddPoint(int _point = 0, bool _isNewMove = false)
     {
@@ -119,13 +117,11 @@ public class User : MonoBehaviour
             this.moveCounter++;
             HexaFunctions.HexagonMoved?.Invoke();
         }
-        
-
+    
         bool _isLevelUpdated = false;
 
         if(_point > 0)
         {
-            Debug.Log("PUAN ALDIN: " + _point.ToString());
 
             this.userScore += _point;
 

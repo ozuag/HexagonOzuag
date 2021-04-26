@@ -94,8 +94,6 @@ namespace HexaFall.Basics
 
         public Transform GetTransform => this.transform;
 
-        //public HexaType GetHexaType => this.HexagonType;
-
         public virtual HexagonData GetHexagonData() => new HexagonData((int)this.HexagonType);
 
         public virtual void SetHexagonData(HexagonData _data) { }
@@ -245,8 +243,6 @@ namespace HexaFall.Basics
             this.GetComponentInParent<HexaGridVertex>()?.ReleaseGridObject();
 
             this.Reset();
-
-         
 
             HexaPooling.Instance.PushObject(this.HexagonType, this.gameObject);
 
@@ -628,6 +624,51 @@ namespace HexaFall.Basics
             }
 
             return _index;
+        }
+
+        private static List<Color> HexaColors = new List<Color>();
+
+        public static void SetHexaColor(int _nColors = 5)
+        {
+            float _s = 1f;
+            float _v = 1f;
+
+            float _hStep = 1f / _nColors;
+
+            HexaColors.Clear();
+
+            for (float _h = 0f; _h < 1.0f; _h += _hStep)
+                HexaColors.Add(Color.HSVToRGB(_h, _s, _v));
+        }
+
+        public static Color GetHexaColor(int _index)
+        {
+            _index = Mathf.Clamp(_index, 0, HexaColors.Count - 1);
+            return HexaColors[_index];
+        }
+
+        public static int GetRandomColorIndex => UnityEngine.Random.Range(0, HexaColors.Count);
+
+        // seçili renk havuzunu rastgele 2 farklı kümeye böler
+        public static void RandomColorGroups(out List<int> _group1, out List<int> _group2)
+        {
+            _group1 = new List<int>();
+            _group2 = new List<int>();
+
+            for (int i = 0; i < HexaColors.Count; i++)
+                _group1.Add(i);
+
+            int _nGroup2 = HexaColors.Count / 2;
+
+            for (int i = 0; i < _nGroup2; i++)
+            {
+                int _index = UnityEngine.Random.Range(0, _group1.Count);
+                _group2.Add(_group1[_index]);
+
+                _group1.RemoveAt(_index);
+            }
+
+
         }
 
     }

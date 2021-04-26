@@ -16,7 +16,6 @@ public class HexaGridSystem : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-
     }
 
     private void OnDestroy()
@@ -24,10 +23,8 @@ public class HexaGridSystem : MonoBehaviour
         this.vertices = null;
     }
 
-    public void SetGridSystem(int _nRows, int _nColumns, float _cellWidth, float _cellHeight, float _mapWidth, float _mapHeight, float _mapScale = 1f, int _nColors = 5)
+    public void SetGridSystem(int _nRows, int _nColumns, float _cellWidth, float _cellHeight, float _mapWidth, float _mapHeight, float _mapScale = 1f)
     {
-        this.SetDefinedColors(_nColors);
-
 
         this.hexaGridSystem = this.transform.GetComponent<RectTransform>();
 
@@ -95,7 +92,7 @@ public class HexaGridSystem : MonoBehaviour
                 if (_colorGroup2 != null)
                     _colorGroup2.Clear();
 
-                this.SetColorGroups(out _colorGroup1, out _colorGroup2);
+                HexaFunctions.RandomColorGroups(out _colorGroup1, out _colorGroup2);
             }
 
             for (int j = 0; j < _nColumns; j++)
@@ -192,59 +189,6 @@ public class HexaGridSystem : MonoBehaviour
 
     }
 
-    // BUNLARI BURADAN KALDIR BİR ARA
-    [SerializeField]
-    private List<Color> definedColors;
-
-    public Color GetColor(int _index)
-    {
-        if (this.definedColors == null)
-            return Color.gray;
-
-        Debug.Log("Color Index: " + _index.ToString());
-
-        if ((_index) < 0 | (_index >= this.definedColors.Count))
-            _index = Random.Range(0, this.definedColors.Count);
-
-        return this.definedColors[_index];
-    }
-
-    private void SetDefinedColors(int _nColors = 5)
-    {
-        float _s = 1f;
-        float _v = 1f;
-
-        float _hStep = 1f / _nColors;
-
-        this.definedColors = new List<Color>();
-
-        for (float _h = 0f; _h < 1.0f; _h += _hStep)
-            this.definedColors.Add(Color.HSVToRGB(_h, _s, _v));
-
-    }
-
-    // seçili renk havuzunu rastgele 2 farklı kümeye böler
-    private void SetColorGroups(out List<int> _group1, out List<int> _group2)
-    {
-        _group1 = new List<int>();
-        _group2 = new List<int>();
-
-        for (int i = 0; i < this.definedColors.Count; i++)
-            _group1.Add(i);
-
-        int _nGroup2 = this.definedColors.Count / 2;
-
-        for (int i = 0; i < _nGroup2; i++)
-        {
-            int _index = Random.Range(0, _group1.Count);
-            _group2.Add(_group1[_index]);
-
-            _group1.RemoveAt(_index);
-        }
-
-
-    }
-
     // sol-aşağıdan'dan sağ-üste doğru sıra ile tarayarak boş gridleri doldurur.
     public void FillEmptyGridsOnly(bool _useBomb, out HexaGroup _hexagroup)
     {
@@ -282,7 +226,7 @@ public class HexaGridSystem : MonoBehaviour
                     if(_go != null)
                     {
            
-                        _go.GetComponent<BasicHexagon>()?.SetHexagonData(new HexagonData(int.MinValue, Random.Range(0, this.definedColors.Count), int.MinValue));
+                        _go.GetComponent<BasicHexagon>()?.SetHexagonData(new HexagonData(int.MinValue, HexaFunctions.GetRandomColorIndex, int.MinValue));
                         
                         _go.transform.position = this.vertices[i, j].transform.position + (new Vector3(0.0f, this.vertices[_nRows - 2, j].transform.position.y + 128f, 0.0f));
 
