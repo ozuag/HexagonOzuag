@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class ColorHexagon : BasicHexagon, IColorHexagon
 {
+    public override HexaType HexagonType => HexaType.ColorHexagon;
+
     protected int colorId = int.MinValue; // renk id, renk karşılaştırmalarda kullanılır
 
     public void SetColor(int _colorId)
@@ -19,7 +21,7 @@ public class ColorHexagon : BasicHexagon, IColorHexagon
         return this.colorId;
     }
 
-    // bu hexagnonun mevcut konumumda üçlü olma durumu ve eğer üçlü ise patlatıldığında kaç puan gelir
+    // bu hexagnonun mevcut konumunda üçlü olma durumu ve eğer üçlü ise patlatıldığında kaç puan gelir
     public int TripletState()
     {
         bool _isTriplet = false; // en az üçlü ise  puan hesaplanacak
@@ -53,15 +55,15 @@ public class ColorHexagon : BasicHexagon, IColorHexagon
                     if (this.AddOnWantedList()) // KENDİSİNİ EKLE
                     {
                         // listeye eklenebildi, ödülü al
-                        if (_pointCounter.ContainsKey(this.hexaType) == false)
-                            _pointCounter.Add(this.hexaType, 1);
+                        if (_pointCounter.ContainsKey(this.HexagonType) == false)
+                            _pointCounter.Add(this.HexagonType, 1);
                         else
-                            _pointCounter[this.hexaType]++;
+                            _pointCounter[this.HexagonType]++;
                     }
 
                     if (_firstLinkedObject.hexagon.AddOnWantedList()) // KOMŞUSUNU EKLE
                     {
-                        HexaType _linkedType = _firstLinkedObject.hexagon.GetHexaType;
+                        HexaType _linkedType = _firstLinkedObject.hexagon.HexagonType;
 
                         if (_pointCounter.ContainsKey(_linkedType) == false)
                             _pointCounter.Add(_linkedType, 1);
@@ -71,7 +73,7 @@ public class ColorHexagon : BasicHexagon, IColorHexagon
 
                     if (_secondLinkedObject.hexagon.AddOnWantedList()) // KOMŞUSUNUN KOMŞUSUNU EKLE
                     {
-                        HexaType _linkedType = _secondLinkedObject.hexagon.GetHexaType;
+                        HexaType _linkedType = _secondLinkedObject.hexagon.HexagonType;
 
                         if (_pointCounter.ContainsKey(_linkedType) == false)
                             _pointCounter.Add(_linkedType, 1);
@@ -121,7 +123,7 @@ public class ColorHexagon : BasicHexagon, IColorHexagon
 
     public override HexagonData GetHexagonData()
     {
-        return new HexagonData((int)this.hexaType, this.colorId);
+        return new HexagonData((int)this.HexagonType, this.colorId);
     }
 
     public override void SetHexagonData(HexagonData _data)

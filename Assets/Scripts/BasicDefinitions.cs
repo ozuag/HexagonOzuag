@@ -82,8 +82,7 @@ namespace HexaFall.Basics
         [SerializeField]
         protected SpriteRenderer spriteRenderer; // renk ataması yapılacak sprite
 
-        [SerializeField]
-        protected HexaType hexaType = HexaType.NotDefined; // bomba, starred ya da normal
+        public virtual HexaType HexagonType { get; protected set; } // bomba, starred ya da normal
 
         // saat yönü tersinde atama yap
         [SerializeField]
@@ -95,9 +94,9 @@ namespace HexaFall.Basics
 
         public Transform GetTransform => this.transform;
 
-        public HexaType GetHexaType => this.hexaType;
+        //public HexaType GetHexaType => this.HexagonType;
 
-        public virtual HexagonData GetHexagonData() => new HexagonData((int)this.hexaType);
+        public virtual HexagonData GetHexagonData() => new HexagonData((int)this.HexagonType);
 
         public virtual void SetHexagonData(HexagonData _data) { }
 
@@ -249,7 +248,7 @@ namespace HexaFall.Basics
 
          
 
-            HexaPooling.Instance.PushObject(this.hexaType, this.gameObject);
+            HexaPooling.Instance.PushObject(this.HexagonType, this.gameObject);
 
         }
 

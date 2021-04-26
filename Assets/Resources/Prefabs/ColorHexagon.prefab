@@ -53,7 +53,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 1671070146830526952}
-  hexaType: 0
+  HexagonType: 0
   edgeColliders:
   - {fileID: 2015396532728539681}
   - {fileID: 5606677984020069648}

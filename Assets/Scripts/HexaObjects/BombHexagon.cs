@@ -3,6 +3,7 @@ using HexaFall.Basics;
 
 public class BombHexagon : ColorHexagon, IBombHexagon
 {
+    public override HexaType HexagonType => HexaType.BombHexagon;
 
     [SerializeField]
     private SpriteRenderer counterSpriteRenderer;
@@ -35,7 +36,7 @@ public class BombHexagon : ColorHexagon, IBombHexagon
 
     public override HexagonData GetHexagonData()
     {
-        return new HexagonData((int)this.hexaType, this.colorId, this.bombCounter);
+        return new HexagonData((int)this.HexagonType, this.colorId, this.bombCounter);
     }
 
     public override void SetHexagonData(HexagonData _data)
