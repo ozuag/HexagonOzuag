@@ -328,8 +328,9 @@ namespace HexaFall.Basics
 
             int _preferredStep = _ccwSearch ? 1 : -1;
 
-            // önce saat yönü tersindeki kenara bak, aynı renkte ise bunu gönder
+            // önce istenen yödeki kenara bak, aynı renkte ise bunu gönder
             int _adjacentEdgeId = _edgeId + _preferredStep;
+
             if(_adjacentEdgeId < 0)
                 _adjacentEdgeId += this.edgeColliders.Count;
             else if(_adjacentEdgeId >= this.edgeColliders.Count)
@@ -597,8 +598,6 @@ namespace HexaFall.Basics
             this.hexagon = null;
             this.uniqeId = int.MinValue;
         }
-
-
     }
 
     public static class HexaFunctions

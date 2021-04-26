@@ -119,7 +119,6 @@ public class ColorHexagon : BasicHexagon, IColorHexagon
 
     }
 
-
     public override HexagonData GetHexagonData()
     {
         return new HexagonData((int)this.hexaType, this.colorId);
