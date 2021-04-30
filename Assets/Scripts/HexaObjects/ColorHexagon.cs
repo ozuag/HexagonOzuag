@@ -2,7 +2,7 @@
 using HexaFall.Basics;
 using UnityEngine;
 
-public class ColorHexagon : BasicHexagon, IColorHexagon
+public class ColorHexagon : HexagonBasics, IColorHexagon
 {
     public override HexaType HexagonType => HexaType.ColorHexagon;
 

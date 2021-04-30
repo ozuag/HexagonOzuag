@@ -88,6 +88,6 @@ public class HexaGridVertex : MonoBehaviour
     }
 
 
-    public HexagonData GetHexaData() => this.GetComponentInChildren<BasicHexagon>()?.GetHexagonData();
+    public HexagonData GetHexaData() => this.GetComponentInChildren<HexagonBasics>()?.GetHexagonData();
     
 }

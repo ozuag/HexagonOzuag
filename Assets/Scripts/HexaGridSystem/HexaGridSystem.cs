@@ -111,7 +111,7 @@ public class HexaGridSystem : MonoBehaviour
                 {
                     _go.SetActive(true);
 
-                    BasicHexagon _hex = _go.GetComponent<BasicHexagon>();
+                    HexagonBasics _hex = _go.GetComponent<HexagonBasics>();
 
                     if (_hex != null)
                     {
@@ -168,7 +168,7 @@ public class HexaGridSystem : MonoBehaviour
                 {
                    
 
-                    BasicHexagon _hex = _go.GetComponent<BasicHexagon>();
+                    HexagonBasics _hex = _go.GetComponent<HexagonBasics>();
                     if (_hex != null)
                     {
                         
@@ -226,7 +226,7 @@ public class HexaGridSystem : MonoBehaviour
                     if(_go != null)
                     {
            
-                        _go.GetComponent<BasicHexagon>()?.SetHexagonData(new HexagonData(int.MinValue, HexaFunctions.GetRandomColorIndex, int.MinValue));
+                        _go.GetComponent<HexagonBasics>()?.SetHexagonData(new HexagonData(int.MinValue, HexaFunctions.GetRandomColorIndex, int.MinValue));
                         
                         _go.transform.position = this.vertices[i, j].transform.position + (new Vector3(0.0f, this.vertices[_nRows - 2, j].transform.position.y + 128f, 0.0f));
 

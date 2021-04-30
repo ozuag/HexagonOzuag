@@ -49,10 +49,10 @@ public class HexaEdgeCollider : MonoBehaviour, IEdgeCollider
         // ilgilenmediği bir collider ise geç
         if (_iedge == null)
             return;
-            
+
         this.LinkedHexagon.edge = _iedge.Edge;
         this.LinkedHexagon.uniqeId = collision.gameObject.GetInstanceID();
-        this.LinkedHexagon.hexagon = collision.gameObject.GetComponentInParent<ColorHexagon>();
+        this.LinkedHexagon.hexagon = collision.gameObject.GetComponentInParent<HexagonBasics>();
 
         this.ActiveEdge = true;
     }
