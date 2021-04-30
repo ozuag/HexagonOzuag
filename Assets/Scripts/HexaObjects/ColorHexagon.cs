@@ -6,19 +6,14 @@ public class ColorHexagon : BasicHexagon, IColorHexagon
 {
     public override HexaType HexagonType => HexaType.ColorHexagon;
 
-    protected int colorId = int.MinValue; // renk id, renk karşılaştırmalarda kullanılır
+    public int ColorId { get; private set; } = int.MinValue;
 
     public void SetColor(int _colorId)
     {
-        this.colorId = _colorId;
+        this.ColorId = _colorId;
 
         if (this.spriteRenderer != null)
             this.spriteRenderer.color = HexaFunctions.GetHexaColor(_colorId);
-    }
-
-    public int GetColorId()
-    {
-        return this.colorId;
     }
 
     // bu hexagnonun mevcut konumunda üçlü olma durumu ve eğer üçlü ise patlatıldığında kaç puan gelir
@@ -43,7 +38,7 @@ public class ColorHexagon : BasicHexagon, IColorHexagon
             // bağlı olduğu altıgen ile renk uyumu yoksa dikkate alma
             int _firstColorId = (int)_firstLinkedObject.hexagon?.GetHexagonData()?.colorId;
 
-            if (_firstColorId  == this.colorId)
+            if (_firstColorId  == this.ColorId)
             {
 
                 LinkedObject _secondLinkedObject = _firstLinkedObject.hexagon.GetEdgeNeighbor((int) _firstLinkedObject.edge, true, true);
@@ -117,13 +112,13 @@ public class ColorHexagon : BasicHexagon, IColorHexagon
     {
         base.Reset();
 
-        this.colorId = int.MinValue;
+        this.ColorId = int.MinValue;
 
     }
 
     public override HexagonData GetHexagonData()
     {
-        return new HexagonData((int)this.HexagonType, this.colorId);
+        return new HexagonData((int)this.HexagonType, this.ColorId);
     }
 
     public override void SetHexagonData(HexagonData _data)
@@ -139,7 +134,7 @@ public class ColorHexagon : BasicHexagon, IColorHexagon
             //_particles.transform.SetParent(this.transform.parent);
             _particles.transform.position = this.transform.position;
 
-            _particles.GetComponent<HexaParticles>()?.SetColor(HexaFunctions.GetHexaColor(this.colorId));
+            _particles.GetComponent<HexaParticles>()?.SetColor(HexaFunctions.GetHexaColor(this.ColorId));
 
             _particles.SetActive(true);
         }

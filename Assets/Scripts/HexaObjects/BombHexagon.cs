@@ -11,7 +11,7 @@ public class BombHexagon : ColorHexagon, IBombHexagon
     [SerializeField]
     private Sprite[] countdownSprites;
 
-    private int bombCounter = 13;
+    public int BombCounter {get; private set; } = 13;
 
     protected override void OnEnable()
     {
@@ -36,13 +36,13 @@ public class BombHexagon : ColorHexagon, IBombHexagon
 
     public override HexagonData GetHexagonData()
     {
-        return new HexagonData((int)this.HexagonType, this.colorId, this.bombCounter);
+        return new HexagonData((int) this.HexagonType, this.ColorId, this.BombCounter);
     }
 
     public override void SetHexagonData(HexagonData _data)
     {
         this.SetColor(_data.colorId);
-        this.SetParameter(_data.parameter1);
+        this.BombCounter = _data.parameter1;
     }
 
     private void InitializeBomb(int _counter = -1)
@@ -51,11 +51,11 @@ public class BombHexagon : ColorHexagon, IBombHexagon
         if (_counter < 0)
         {
             if (this.countdownSprites != null)
-                this.bombCounter = (this.countdownSprites.Length - 1);
+                this.BombCounter = (this.countdownSprites.Length - 1);
         }
         else
         {
-            this.bombCounter = _counter;
+            this.BombCounter = _counter;
         }
 
 
@@ -63,27 +63,16 @@ public class BombHexagon : ColorHexagon, IBombHexagon
 
     }
 
-    public void SetParameter(int _par1 = -666)
-    {
-        this.InitializeBomb(_par1);
-    }
-
-    public int GetParameter()
-    {
-        return this.bombCounter;
-    }
-
     private void MoveListener()
     {
-
         this.CountDown();
     }
 
     private void CountDown()
     {
-        this.bombCounter--;
+        this.BombCounter--;
 
-        if(this.bombCounter < 0)
+        if(this.BombCounter < 0)
         {
             Debug.Log("BOMBAA PATLADI");
             HexaFunctions.KillAllHexagons?.Invoke();
@@ -102,10 +91,10 @@ public class BombHexagon : ColorHexagon, IBombHexagon
     {
         if ((this.countdownSprites != null) & (this.counterSpriteRenderer != null))
         {
-            if (this.bombCounter >= this.countdownSprites.Length)
-                this.bombCounter = this.countdownSprites.Length - 1;
+            if (this.BombCounter >= this.countdownSprites.Length)
+                this.BombCounter = this.countdownSprites.Length - 1;
 
-            this.counterSpriteRenderer.sprite = this.countdownSprites[this.bombCounter];
+            this.counterSpriteRenderer.sprite = this.countdownSprites[this.BombCounter];
 
         }
     }

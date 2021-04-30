@@ -37,45 +37,7 @@ namespace HexaFall.Basics
         BottomRight = 5, // (300 - 360] 
 
     }
-
-    // Bomba (parametersi olan hexagonlar için)
-    public interface IBombHexagon
-    {
-        void SetParameter(int _parameter1 = -666);
-
-        int GetParameter();
-    }
-
-    // rengi olmayan hexagonlar da gelebilir (elmas, star vb -> HexaFall'da varlar)
-    public interface IColorHexagon
-    {
-        void SetColor(int _colorId);
-
-        int GetColorId();
-
-        // kendisi ile aynı renkte 3'lü grup oluşturabildi mi
-        int TripletState();
-
-    }
-
-    public interface IHexagon
-    {
-        void OnSelected(Vector2 _localSelecPosition);
-
-        bool AddOnWantedList();
-
-        void SetEdgeCollidersEnableState(bool _state);
-
-        int GetClosestActiveEdge(int _edgeId);
-
-        void MoveTo(Vector3 _target, float _moveSpeed);
-
-        // kendi rengi önemsiz olduğu için en alt katmandaki interface'de, tüm hexagonlarda bu sorug yapıabilir
-        bool IsTripletCandidate(); // bir hamle ile bu grid'de üçlü grup oluşabilir mi? (kendisi üçlü içinde olmak zorunda değil)
-
-    }
-
-    public abstract class BasicHexagon : MonoBehaviour, IHexagon
+    public abstract class BasicHexagon : MonoBehaviour
     {
         [SerializeField]
         protected SpriteRenderer spriteRenderer; // renk ataması yapılacak sprite
@@ -118,6 +80,24 @@ namespace HexaFall.Basics
             this.Reset();
         }
 
+         // Hexagonu havuza gönder
+        public void Kill()
+        {
+            this.BreakHexagon();
+
+            this.GetComponentInParent<HexaGridVertex>()?.ReleaseGridObject();
+
+            this.Reset();
+
+            HexaPooling.Instance.PushObject(this.HexagonType, this.gameObject);
+
+        }
+
+        protected virtual void BreakHexagon()
+        {
+
+        }
+        
         public bool AddOnWantedList()
         {
             // birden fazla hexagon/edge/group bunu listeye almak isteyebilir, sadece bir defa alınsın
@@ -231,24 +211,6 @@ namespace HexaFall.Basics
             _evens.Clear();
             _odds.Clear();
             return _result;
-        }
-
-        // Hexagonu havuza gönder
-        public void Kill()
-        {
-            this.BreakHexagon();
-
-            this.GetComponentInParent<HexaGridVertex>()?.ReleaseGridObject();
-
-            this.Reset();
-
-            HexaPooling.Instance.PushObject(this.HexagonType, this.gameObject);
-
-        }
-
-        protected virtual void BreakHexagon()
-        {
-
         }
 
         // hedefe doğru gönder
@@ -585,11 +547,11 @@ namespace HexaFall.Basics
         public int uniqeId;
         public BasicHexagon hexagon;
 
-        public LinkedObject()
+        public LinkedObject(HexagonEdge _edge = HexagonEdge.NotDefined, BasicHexagon _hexagon = null, int _uniqeId = int.MinValue)
         {
-            this.edge = HexagonEdge.NotDefined;
-            this.hexagon = null;
-            this.uniqeId = int.MinValue;
+            this.edge = _edge;
+            this.hexagon = _hexagon;
+            this.uniqeId = _uniqeId;
         }
     }
 

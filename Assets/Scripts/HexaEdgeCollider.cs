@@ -1,37 +1,17 @@
 ﻿using UnityEngine;
 using HexaFall.Basics;
 
-public class HexaEdgeCollider : MonoBehaviour
+[RequireComponent(typeof(Collider2D))]
+public class HexaEdgeCollider : MonoBehaviour, IEdgeCollider
 {
-    [SerializeField]
-    private HexagonEdge edgeId = HexagonEdge.NotDefined;
-
-    [SerializeField]
-    private LinkedObject linkedHexagon = new LinkedObject();
-
-    [SerializeField]
-    private bool isColliderActive = false;
-
-    private Collider2D collider2d;
-
-    public HexagonEdge Edge { get { return this.edgeId; } }
-
-    public bool ActiveEdge { get { return this.isColliderActive; } }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        this.collider2d = this.GetComponent<Collider2D>();
-
-        if (this.edgeId == HexagonEdge.NotDefined)
-            this.edgeId = (HexagonEdge) this.transform.GetSiblingIndex();
-    }
+    public HexagonEdge Edge => (HexagonEdge) this.transform.GetSiblingIndex();
+    public LinkedObject LinkedHexagon {get;} = new LinkedObject();
+    public void SetColliderEnabledState(bool _state) => this.GetComponent<Collider2D>().enabled = _state;
+    public bool ActiveEdge { get; private set;} = false;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-
         this.CheckCollision(collision);
-
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -42,13 +22,13 @@ public class HexaEdgeCollider : MonoBehaviour
             return;
 
         // mevcut bağlı edge ise bağlantıyı kaldır
-        if ( collision.gameObject.GetInstanceID() == this.linkedHexagon.uniqeId)
+        if ( collision.gameObject.GetInstanceID() == this.LinkedHexagon.uniqeId)
         {
-            this.isColliderActive = false;
+            this.ActiveEdge = false;
 
-            this.linkedHexagon.edge = HexagonEdge.NotDefined;
-            this.linkedHexagon.uniqeId = int.MinValue;
-            this.linkedHexagon.hexagon = null;
+            this.LinkedHexagon.edge = HexagonEdge.NotDefined;
+            this.LinkedHexagon.uniqeId = int.MinValue;
+            this.LinkedHexagon.hexagon = null;
         }
 
     }
@@ -61,45 +41,23 @@ public class HexaEdgeCollider : MonoBehaviour
     private void CheckCollision(Collider2D collision)
     {
         // zaten aktif ise yeni bir etkileşime izin verme
-        if (this.isColliderActive)
+        if (this.ActiveEdge)
             return;
+
+        IEdgeCollider _iedge = collision.GetComponent<IEdgeCollider>();
 
         // ilgilenmediği bir collider ise geç
-        if (collision.gameObject.tag != "HexaEdge")
+        if (_iedge == null)
             return;
+            
+        this.LinkedHexagon.edge = _iedge.Edge;
+        this.LinkedHexagon.uniqeId = collision.gameObject.GetInstanceID();
+        this.LinkedHexagon.hexagon = collision.gameObject.GetComponentInParent<ColorHexagon>();
 
-        this.isColliderActive = true;
-
-        HexaEdgeCollider _edgeCollider = collision.gameObject.GetComponent<HexaEdgeCollider>();
-
-        if (_edgeCollider != null)
-            this.linkedHexagon.edge = _edgeCollider.Edge;
-        else
-            this.linkedHexagon.edge = (HexagonEdge)collision.transform.GetSiblingIndex();
-
-        this.linkedHexagon.uniqeId = collision.gameObject.GetInstanceID();
-        this.linkedHexagon.hexagon = collision.gameObject.GetComponentInParent<ColorHexagon>();
+        this.ActiveEdge = true;
     }
 
-    public LinkedObject LinkedHexagon
-    {
-        get
-        {
-            LinkedObject _linkedObject = new LinkedObject();
-
-            _linkedObject.edge = this.linkedHexagon.edge;
-            _linkedObject.uniqeId = this.linkedHexagon.uniqeId;
-            _linkedObject.hexagon = this.linkedHexagon.hexagon;
-
-            return _linkedObject;
-
-        }
-    }
-
-    public void SetColliderEnabledState(bool _state)
-    {
-        if (this.collider2d != null)
-            this.collider2d.enabled = _state;
-    }
-
+    
+   
+    
 }
