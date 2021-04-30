@@ -42,7 +42,7 @@ public class BombHexagon : ColorHexagon, IBombHexagon
     public override void SetHexagonData(HexagonData _data)
     {
         this.SetColor(_data.colorId);
-        this.BombCounter = _data.parameter1;
+        this.InitializeBomb(_data.parameter1);
     }
 
     private void InitializeBomb(int _counter = -1)

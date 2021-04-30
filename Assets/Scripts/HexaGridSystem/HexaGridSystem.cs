@@ -258,19 +258,15 @@ public class HexaGridSystem : MonoBehaviour
         {
             for (int j = 0; j < _nColumns; j++)
             {
-                if (this.vertices[i, j] == null)
+                if ( (this.vertices[i, j] == null))
                     continue;
 
                 if (this.vertices[i, j].IsEmpty == true)
                     continue;
 
-                ColorHexagon _hex = this.vertices[i, j].transform.GetComponentInChildren<ColorHexagon>();
-                if (_hex != null)
-                {
-                    if (_hex.IsTripletCandidate())
-                        return false;
-                        
-                }
+                if( this.vertices[i, j].transform.GetComponentInChildren<HexagonBasics>()?.IsTripletCandidate() == true)
+                    return false;
+                
             }
         }
 
@@ -286,13 +282,16 @@ public class HexaGridSystem : MonoBehaviour
 
         for (int _upIndex = _rowIndex + 2; _upIndex < _nRows; _upIndex += 2)
         {
+
+            if(this.vertices[_upIndex, _colIndex] == null)
+                continue;
+
             // boşsa atla
             if (this.vertices[_upIndex, _colIndex].IsEmpty == true)
                 continue;
 
             // bunu boşalt
             GameObject _go = this.vertices[_upIndex, _colIndex].ReleaseGridObject();
-
 
             if (_go == null)
                 continue;

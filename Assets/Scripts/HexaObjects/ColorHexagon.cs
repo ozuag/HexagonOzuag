@@ -17,7 +17,7 @@ public class ColorHexagon : HexagonBasics, IColorHexagon
     }
 
     // bu hexagnonun mevcut konumunda üçlü olma durumu ve eğer üçlü ise patlatıldığında kaç puan gelir
-    public int TripletState()
+    public override int GroupPoint()
     {
         bool _isTriplet = false; // en az üçlü ise  puan hesaplanacak
         int _totalPoint = 0; // puan
@@ -101,7 +101,6 @@ public class ColorHexagon : HexagonBasics, IColorHexagon
 
             _totalPoint = _nHexagons * _multiplier * HexaFunctions.HexaKillPoint;
         }
-
 
         _pointCounter.Clear();
 

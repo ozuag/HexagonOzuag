@@ -91,15 +91,18 @@ public class UserInputs : MonoBehaviour, IPointerDownHandler, IPointerUpHandler,
 
         RaycastHit2D _hit = Physics2D.GetRayIntersection(Camera.main.ScreenPointToRay(eventData.position));
 
-        if (_hit.transform != null)
-        {
+        if(_hit)
+            _hit.transform.GetComponent<HexagonBasics>()?.OnSelected(_hit.transform.InverseTransformPoint(_hit.point));
 
-            ColorHexagon _hexa = _hit.transform.GetComponent<ColorHexagon>();
+        // if (_hit.transform != null)
+        // {
 
-            if (_hexa != null)
-                _hexa.OnSelected(_hit.transform.InverseTransformPoint(_hit.point));
+        //     HexagonBasics _hexa = _hit.transform.GetComponent<HexagonBasics>();
 
-        }
+        //     if (_hexa != null)
+        //         _hexa.OnSelected(_hit.transform.InverseTransformPoint(_hit.point));
+
+        // }
 
     }
 

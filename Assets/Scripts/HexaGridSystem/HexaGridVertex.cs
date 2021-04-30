@@ -1,22 +1,11 @@
 ﻿using UnityEngine;
 using HexaFall.Basics;
 
-
-// ECS İLE YAPMALI
+[RequireComponent(typeof(RectTransform))]
 public class HexaGridVertex : MonoBehaviour
 {
     [SerializeField]
-    RectTransform rectTransfom;
-
-    [SerializeField]
-    private Vector2Int gridIndex;
-
-    [SerializeField]
-    private bool isEmpty = true;
-
-    public bool IsEmpty { get { return this.isEmpty; } }
-
-    public Vector2Int SetGridIndex { get { return gridIndex; } }
+    public bool IsEmpty { get; private set; } = true;
 
     public GameObject PlacedObject { get {
 
@@ -28,17 +17,8 @@ public class HexaGridVertex : MonoBehaviour
 
     public void SetMapPosition(int _rowIndex, int _columnIndex, float _hStepSize, float _hOffSet, float _vStepSize ,float _vOffSet)
     {
-        if (this.rectTransfom == null)
-            return;
-
-        this.gridIndex.x = _columnIndex;
-        this.gridIndex.y = _rowIndex;
-
-        this.name = "GridVertex_" + this.gridIndex.x.ToString() + "_" + this.gridIndex.y.ToString();
-
-
-        this.rectTransfom.anchoredPosition = new Vector2((_columnIndex * _hStepSize) + _hOffSet + _vOffSet, (_rowIndex+1)* _vStepSize);
-
+        this.name = "GridVertex_" + _columnIndex.ToString() + "_" + _rowIndex.ToString();
+        this.GetComponent<RectTransform>().anchoredPosition = new Vector2((_columnIndex * _hStepSize) + _hOffSet + _vOffSet, (_rowIndex+1)* _vStepSize);
     }
 
     public bool PlaceObject(GameObject _object, bool _animate = false)
@@ -57,36 +37,18 @@ public class HexaGridVertex : MonoBehaviour
         }
         else
         {
-            ColorHexagon _hex = _object.GetComponent<ColorHexagon>();
-            if (_hex != null)
-                _hex.MoveTo(this.transform.position, 6.66f);
+          _object.GetComponent<HexagonBasics>()?.MoveTo(this.transform.position, 6.66f);
         }
 
-        this.isEmpty = false;
-
+        this.IsEmpty = false;
         return true;
     }
 
     public GameObject ReleaseGridObject()
     {
-        GameObject _go = null;
-
-        if (this.transform.childCount > 0)
-        {
-            Transform _child = this.transform.GetChild(0);
-
-            if(_child != null)
-            {
-                _go = _child.gameObject;
-                //_child.SetParent(null, true);
-            }
-                
-        }
-
-        this.isEmpty = true;
-        return _go;
+        this.IsEmpty = true;
+        return this.transform.GetChild(0)?.gameObject;
     }
-
 
     public HexagonData GetHexaData() => this.GetComponentInChildren<HexagonBasics>()?.GetHexagonData();
     

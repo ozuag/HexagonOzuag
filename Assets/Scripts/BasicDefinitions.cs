@@ -149,17 +149,15 @@ namespace HexaFall.Basics
             for (int i = 0; i < this.hexagons.Count; i++)
             {
 
-                ColorHexagon _hex = this.hexagons[i].GetComponent<ColorHexagon>();
-
+                HexagonBasics _hex = this.hexagons[i].GetComponent<HexagonBasics>();
                 if (_hex == null)
                     continue;
 
-                int _point = _hex.TripletState();
+                int _point = _hex.GroupPoint();
 
                 _totalPoint += _point;
 
             }
-
 
             return _totalPoint;
         }
